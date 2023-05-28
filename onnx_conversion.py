@@ -2,7 +2,7 @@ import cv2
 import torch
 import numpy as np
 import onnxruntime
-from nanodet.data.transform import Pipeline
+from nanodet.data.transform import PipelineInference
 from nanodet.model.arch import build_model
 from nanodet.util import Logger, cfg, load_config, load_model_weight
 import onnxsim
@@ -47,7 +47,7 @@ def main():
     # Load model
     model = load_model(cfg, model_path)
     # Run inference on PyTorch model
-    torch_bbox, torch_msks, torch_labels, torch_scores = model(img_tensor)
+    torch_bbox, torch_msks, torch_labels, torch_scores = model.forward_onnx(img_tensor)
 
     print(f"Torch out shape is {torch_bbox.shape},{torch_msks.shape},{torch_labels.shape},{torch_scores.shape}")
 

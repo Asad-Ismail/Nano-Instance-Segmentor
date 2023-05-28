@@ -34,6 +34,15 @@ class OneStageDetectorSegmentor(nn.Module):
             return self.head._forward_onnx(x,features)
         return x,features
 
+    def forward_onnx(self,x):
+        x = self.backbone(x)
+        if hasattr(self, "fpn"):
+            features = self.fpn(x)
+        if hasattr(self, "head"):
+            x = self.head(features)
+        return self.head._forward_onnx(x,features)
+
+
     def inference(self, meta):
         with torch.no_grad():
             torch.cuda.synchronize()

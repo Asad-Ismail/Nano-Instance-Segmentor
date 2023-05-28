@@ -13,5 +13,6 @@
 # limitations under the License.
 
 from .pipeline import Pipeline
+from .pipeline import PipelineInference
 
-__all__ = ["Pipeline"]
+__all__ = ["Pipeline","PipelineInference"]
