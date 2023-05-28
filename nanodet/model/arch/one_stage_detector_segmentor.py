@@ -30,10 +30,8 @@ class OneStageDetectorSegmentor(nn.Module):
             features = self.fpn(x)
         if hasattr(self, "head"):
             x = self.head(features)
-        #if torch.onnx.is_in_onnx_export():
-        #    return x
-        masks = self.head._forward_onnx(x,features)
-        return masks
+        if torch.onnx.is_in_onnx_export():
+            return self.head._forward_onnx(x,features)
         return x,features
 
     def inference(self, meta):

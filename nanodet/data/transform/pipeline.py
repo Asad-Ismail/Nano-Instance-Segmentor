@@ -53,7 +53,23 @@ class Pipeline:
         self.shape_transform = ShapeTransform(keep_ratio, **cfg)
         self.color = functools.partial(color_aug_and_norm, kwargs=cfg)
 
-    def __call__(self, meta: Dict, dst_shape: Tuple[int, int]):
+    def __call__(self, dataset: Dataset, meta: Dict, dst_shape: Tuple[int, int]):
         meta = self.shape_transform(meta, dst_shape=dst_shape)
         meta = self.color(meta=meta)
+        return meta
+        
+class PipelineInference:
+    """Data process pipeline. Apply pre-processing on meta_data from dataset. Ideal to use for inference
+
+    Args:
+        cfg (Dict): Data pipeline config.
+        keep_ratio (bool): Whether to keep aspect ratio when resizing image.
+
+    """
+
+    def __init__(self, cfg: Dict, keep_ratio: bool):
+        self.shape_transform = ShapeTransform(keep_ratio, **cfg)
+
+    def __call__(self, meta: Dict, dst_shape: Tuple[int, int]):
+        meta = self.shape_transform(meta, dst_shape=dst_shape)
         return meta
