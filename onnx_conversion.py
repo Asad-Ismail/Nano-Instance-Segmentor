@@ -23,7 +23,7 @@ def load_image_and_process(image_path, cfg):
     img_info = {"height": img.shape[0], "width": img.shape[1]}
     meta = dict(img_info=img_info, raw_img=img, img=img)
 
-    pipeline = Pipeline(cfg.data.val.pipeline, cfg.data.val.keep_ratio)
+    pipeline = PipelineInference(cfg.data.val.pipeline, cfg.data.val.keep_ratio)
     meta = pipeline(meta, cfg.data.val.input_size)
     img_tensor = torch.from_numpy(meta["img"].transpose(2, 0, 1)).unsqueeze(0)
     return img_tensor
