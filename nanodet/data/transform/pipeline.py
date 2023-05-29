@@ -70,7 +70,10 @@ class PipelineInference:
     def __init__(self, cfg: Dict, keep_ratio: bool):
         self.shape_transform = ShapeTransform(keep_ratio, **cfg)
         # No keyword agruments for color function donot perform any color augmentation 
-        self.color = functools.partial(color_aug_and_norm, kwargs={})
+        kwargs={}
+        if "normalize" in cfg:
+            kwargs["normalize"]=cfg["normalize"]
+        self.color = functools.partial(color_aug_and_norm, kwargs=kwargs)
 
     def __call__(self, meta: Dict, dst_shape: Tuple[int, int]):
         meta = self.shape_transform(meta, dst_shape=dst_shape)

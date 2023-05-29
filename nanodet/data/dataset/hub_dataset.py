@@ -66,8 +66,8 @@ class HubDataset(CocoDataset):
         ann_id = 1
         
         for i,d in tqdm(enumerate(self.ds)):
-            if (i>6):
-                break
+            #if (i>20):
+            #    break
             image=d.images.numpy()
             image=cv2.resize(image,(self.img_sz,self.img_sz))
             if self.save_imgs:
