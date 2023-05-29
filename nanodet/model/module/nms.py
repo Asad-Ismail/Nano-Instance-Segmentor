@@ -69,14 +69,14 @@ def multiclass_nms(
         bboxes = multi_bboxes[:, None].expand(multi_scores.size(0), num_classes, 4)
     scores = multi_scores[:, :-1]
 
-    # filter out boxes with low scores
-    valid_mask = scores > score_thr
+    # Select valid bboxes with good score and valid boxes
+    valid_mask = (scores > score_thr) & ((bboxes[...,2]-bboxes[...,0]) > 0) & ((bboxes[...,3]-bboxes[...,1]) > 0)
+
 
     # We use masked_select for ONNX exporting purpose,
     # which is equivalent to bboxes = bboxes[valid_mask]
     # we have to use this ugly code
-    bboxes = torch.masked_select(
-        bboxes, torch.stack((valid_mask, valid_mask, valid_mask, valid_mask), -1)
+    bboxes = torch.masked_select(bboxes, torch.stack((valid_mask, valid_mask, valid_mask, valid_mask), -1)
     ).view(-1, 4)
     if score_factors is not None:
         scores = scores * score_factors[:, None]
