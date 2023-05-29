@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore') # Ignore warnings
 
 # Configurations
 cfg_path = "config/nanoinstance-mask-512.yml"
-model_path = "workspace/nanodet-plus-cucumber_512_test/model_last.ckpt"
+model_path = "workspace/nanodet-plus-cucumber_512_test2/model_last.ckpt"
 out_path = "segmentor.onnx"
 input_shape = (512, 512)
 image_path = "data/cucumbers/113.png"
