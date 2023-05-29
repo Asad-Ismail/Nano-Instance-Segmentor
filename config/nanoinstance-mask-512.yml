@@ -105,7 +105,7 @@ schedule:
     name: linear
     steps: 500
     ratio: 0.0001
-  total_epochs: 1000
+  total_epochs: 200
   lr_schedule:
     name: CosineAnnealingLR
     T_max: 3000
