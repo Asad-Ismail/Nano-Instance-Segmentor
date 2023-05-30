@@ -142,11 +142,8 @@ def generate_random_color():
 def vis_masks(img, masks, boxes,scores,mask_threshold=0.2, box_threshold=0.5):
     img_height, img_width, _ = img.shape
 
-    print(f"image width and height 1 are {width}, {height}")
-
     for mask, box, score in zip(masks, boxes,scores):
         x_min, y_min, x_max, y_max = box
-        print(f"passed box is {box}")
 
         x_min, y_min, x_max, y_max = map(int, [x_min, y_min, x_max, y_max])
 
@@ -194,4 +191,4 @@ for i,batch in enumerate(train_dataloader):
                 scores=[item["score"] for item in preds]
                 raw_img=unnormalize(batch["img"], *cfg["data"]["train"]["pipeline"]["normalize"])
                 vis_img=vis_masks(raw_img.copy(),masks,bboxes,scores)
-                #cv2.imwrite(f"vis_results/vis{i}.png",vis_img)
+                cv2.imwrite(f"vis_results/vis{i}.png",vis_img)
