@@ -67,4 +67,4 @@ def vis_masks(img, masks, boxes,scores,mask_threshold=0.2, box_threshold=0.5):
 
 
 visimg=vis_masks(org_img.copy(), onnx_msks, onnx_bbox, onnx_scores)
-cv2.imwrite(f"onnx.png",visimg)
+cv2.imwrite(f"onnx.png",visimg[...,::-1])
