@@ -120,6 +120,8 @@ work_dirs/
 *.pth
 *.py~
 *.sh~
+**.pyc
+*.pyc
 
 
 data/*

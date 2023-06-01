@@ -5,7 +5,7 @@
 #           AP_small = 0.083
 #               AP_m = 0.278
 #               AP_l = 0.451
-save_dir: workspace/nanodet-plus-cucumber_512_test2
+save_dir: workspace/nanodet-plus-cucumber_512_test3
 model:
   weight_averager:
     name: ExpMovingAverager

@@ -54,8 +54,11 @@ class Pipeline:
         self.color = functools.partial(color_aug_and_norm, kwargs=cfg)
 
     def __call__(self, dataset: Dataset, meta: Dict, dst_shape: Tuple[int, int]):
+        print(f"Before shape transform {meta['img'].min()}, {meta['img'].max()}")
         meta = self.shape_transform(meta, dst_shape=dst_shape)
+        print(f"After shape transform {meta['img'].min()}, {meta['img'].max()}")
         meta = self.color(meta=meta)
+        print(f"After color transform {meta['img'].min()}, {meta['img'].max()}")
         return meta
         
 class PipelineInference:
