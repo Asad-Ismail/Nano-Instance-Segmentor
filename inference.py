@@ -189,6 +189,7 @@ for i,batch in enumerate(train_dataloader):
                 bboxes=[item["bbox"] for item in preds]
                 masks=[torch.from_numpy(np.array(item["mask"])) for item in preds]
                 scores=[item["score"] for item in preds]
+                print(f"Image min and max are {batch['img'].min()}, {batch['img'].max()}")
                 raw_img=unnormalize(batch["img"], *cfg["data"]["train"]["pipeline"]["normalize"])
                 vis_img=vis_masks(raw_img.copy(),masks,bboxes,scores)
                 cv2.imwrite(f"vis_results/vis{i}.png",vis_img)
