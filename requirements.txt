@@ -16,3 +16,4 @@ torchmetrics
 #torchvision
 tqdm
 deeplake
+openvino-dev

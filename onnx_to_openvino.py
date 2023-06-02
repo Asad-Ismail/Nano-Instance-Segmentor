@@ -1,5 +1,9 @@
 # Construct the command for Model Optimizer.
 from pathlib import Path
+import subprocess
+
+
+
 onnx_path="segmentor.onnx"
 model_path="irmodel"
 model_path = Path(model_path)
@@ -20,6 +24,12 @@ print("Exporting ONNX model to IR... This may take a few minutes.")
 mo_result = subprocess.run(mo_command, shell=True, capture_output=True, text=True)
 print(mo_result.stdout)
 
+
+ir_path=Path("irmodel/tinynet.xml")
+from openvino.runtime import Core
+ie = Core()
+model_ir = ie.read_model(model=ir_path)
+compiled_model_ir = ie.compile_model(model=model_ir, device_name="CPU")
 
 # Get input and output layers.
 output_layer_ir0 = compiled_model_ir.output(0)
