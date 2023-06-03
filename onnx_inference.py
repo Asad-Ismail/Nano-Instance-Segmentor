@@ -51,7 +51,7 @@ def vis_results(img, masks, bboxs, scores, mask_threshold=0.2, box_threshold=0.5
 
         color = generate_random_color()
         img[y_min:y_max, x_min:x_max][binary_mask.squeeze()] = color
-    cv2.rectangle(img, (x_min, y_min), (x_max, y_max), color, 2)
+        cv2.rectangle(img, (x_min, y_min), (x_max, y_max), color, 2)
 
     return img
 
