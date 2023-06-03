@@ -55,11 +55,6 @@ def vis_results(img, masks, bboxs, scores, mask_threshold=0.2, box_threshold=0.5
 
     return img
 
-def visualize_masks(img, masks, boxes, scores):
-    for mask, box, score in zip(masks, boxes, scores):
-        img = apply_mask(img.copy(), mask, box, score)
-    return img
-
 def save_image(img, path):
     cv2.imwrite(path, img[...,::-1])
 

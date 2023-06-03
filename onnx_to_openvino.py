@@ -15,9 +15,37 @@ def load_image(image_path):
     img = img[np.newaxis,...]
     return img
 
+def generate_random_color():
+    """Generate a random RGB color."""
+    return [np.random.randint(0, 255) for _ in range(3)]
 
+def save_image(img, path):
+    cv2.imwrite(path, img[...,::-1])
 
+def vis_results(img, masks, bboxs, scores, mask_threshold=0.2, box_threshold=0.5):
+    img_height, img_width, _ = img.shape
 
+    for mask, bbox, score in zip(masks, bboxs,scores):
+        x_min, y_min, x_max, y_max = map(int, bbox)
+
+        if score < box_threshold:
+            print("Filtering using box threshold")
+            return img
+
+        x_min, x_max = max(0, x_min), min(x_max+1, img_width)
+        y_min, y_max = max(0, y_min), min(y_max+1, img_height)
+
+        width, height = x_max - x_min, y_max - y_min
+
+        mask = cv2.resize(mask[0,...], (width, height), interpolation = cv2.INTER_CUBIC)
+        mask[mask < mask_threshold] = 0
+        binary_mask = mask > 0
+
+        color = generate_random_color()
+        img[y_min:y_max, x_min:x_max][binary_mask.squeeze()] = color
+        cv2.rectangle(img, (x_min, y_min), (x_max, y_max), color, 2)
+
+    return img
 
 onnx_path="segmentor.onnx"
 model_path="irmodel"
@@ -28,6 +56,7 @@ IMAGE_WIDTH=512
 mo_command = f"""mo
                  --input_model "{onnx_path}"
                  --input_shape "[1,3, {IMAGE_HEIGHT}, {IMAGE_WIDTH}]"
+                 --compress_to_fp16
                  --output_dir "{model_path}"
                  """
 mo_command = " ".join(mo_command.split())
@@ -56,10 +85,11 @@ image_path = "data/cucumbers/113.png"
 img = load_image(image_path)
 res = compiled_model_ir([img])
 
-boxes=res[output_layer_ir0]
+bboxs=res[output_layer_ir0]
 masks=res[output_layer_ir1]
 labels=res[output_layer_ir2]
 scores=res[output_layer_ir3]
 
-
-print(boxes.shape,masks.shape,labels.shape,scores.shape)
+img = cv2.imread(image_path)
+vis_img=vis_results(img, masks, bboxs, scores)
+save_image(vis_img, "vis_results/onenvino.png")
