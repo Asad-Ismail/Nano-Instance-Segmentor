@@ -22,9 +22,7 @@ for device in devices:
 ie = Core()
 model_onnx = ie.read_model(model=onnx_path)
 compiled_model_onnx = ie.compile_model(model=model_onnx, device_name="CPU")
-
 output_layer_onnx = compiled_model_onnx.output(0)
-
 # Run inference on the input image.
 res_onnx = compiled_model_onnx([normalized_input_image])[output_layer_onnx]
 
@@ -40,32 +38,8 @@ output_layer_ir = compiled_model_ir.output(0)
 # Run inference on the input image.
 res_ir = compiled_model_ir([normalized_input_image])[output_layer_ir]
 
-## Pytorch model runtime
-model.eval()
-with torch.no_grad():
-    result_torch = model(torch.as_tensor(normalized_input_image).float())
-
-result_mask_torch = torch.argmax(result_torch['out'], dim=1).squeeze(0).numpy().astype(np.uint8)
-viz_result_image(
-    image,
-    segmentation_map_to_image(result=result_mask_torch, colormap=VOCLabels.get_colormap()),
-    resize=True,
-)
-
-
 ## Runtime comparison
 num_images = 100
-
-with torch.no_grad():
-    start = time.perf_counter()
-    for _ in range(num_images):
-        model(torch.as_tensor(input_image).float())
-    end = time.perf_counter()
-    time_torch = end - start
-print(
-    f"PyTorch model on CPU: {time_torch/num_images:.3f} seconds per image, "
-    f"FPS: {num_images/time_torch:.2f}"
-)
 
 start = time.perf_counter()
 for _ in range(num_images):
