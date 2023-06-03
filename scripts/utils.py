@@ -59,3 +59,14 @@ def vis_results(img, masks, bboxs, scores, mask_threshold=0.2, box_threshold=0.5
 
 def save_image(img, path):
     cv2.imwrite(path, img[...,::-1])
+
+
+def unnormalize(img, mean, std):
+    img = img.detach().squeeze(0).numpy()
+    img = img.astype(np.float32)
+    mean = np.array(mean, dtype=np.float32).reshape(-1, 1, 1)
+    std = np.array(std, dtype=np.float32).reshape(-1, 1, 1)
+    img = img * std + mean
+    img = np.clip(img, 0, 255)  # Clip values to the range [0, 255]
+    img = img.transpose(1,2,0).astype(np.uint8)
+    return img

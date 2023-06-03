@@ -29,6 +29,7 @@ from typing import Dict, Any
 from nanodet.model.weight_averager import build_weight_averager
 import numpy as np
 import cv2
+from utils import vis_results,generate_random_color,unnormalize,save_image
 
 # Configurations
 torch.backends.cudnn.enabled = True
@@ -137,48 +138,6 @@ print(f"Loading model weights {model_resume_path}!!!")
 task.load_state_dict(torch.load(model_resume_path)["state_dict"]) 
 task.eval()
 
-def generate_random_color():
-    """Generate a random RGB color."""
-    return [np.random.randint(0, 255) for _ in range(3)]
-
-def vis_masks(img, masks, boxes,scores,mask_threshold=0.2, box_threshold=0.5):
-    img_height, img_width, _ = img.shape
-
-    for mask, box, score in zip(masks, boxes,scores):
-        x_min, y_min, x_max, y_max = box
-
-        x_min, y_min, x_max, y_max = map(int, [x_min, y_min, x_max, y_max])
-
-        if score < box_threshold:
-            print("Filtering using box threshold")
-            continue
-        
-        x_min, x_max = max(0, x_min), min(x_max+1, img_width)
-        y_min, y_max = max(0, y_min), min(y_max+1, img_height)
-
-        width, height = x_max - x_min, y_max - y_min
-        mask = mask.unsqueeze(0)
-        mask = F.interpolate(mask, size=(height, width), mode='bicubic', align_corners=True)
-        mask[mask < mask_threshold] = 0
-        binary_mask = mask > 0
-
-        color = generate_random_color()
-        img[y_min:y_max, x_min:x_max][binary_mask.squeeze()] = color
-        cv2.rectangle(img, (x_min, y_min), (x_max, y_max), color, 2)
-
-    return img
-
-
-def unnormalize(img, mean, std):
-    img = img.detach().squeeze(0).numpy()
-    img = img.astype(np.float32)
-    mean = np.array(mean, dtype=np.float32).reshape(-1, 1, 1)
-    std = np.array(std, dtype=np.float32).reshape(-1, 1, 1)
-    img = img * std + mean
-    img = np.clip(img, 0, 255)  # Clip values to the range [0, 255]
-    img = img.transpose(1,2,0).astype(np.uint8)
-    return img
-
 
 evaluator = build_evaluator(cfg.evaluator,train_dataset)
 
@@ -189,9 +148,9 @@ for i,batch in enumerate(train_dataloader):
         for k,v in predictions.items():
             for clas,preds in v.items():
                 bboxes=[item["bbox"] for item in preds]
-                masks=[torch.from_numpy(np.array(item["mask"])) for item in preds]
+                masks=[np.array(item["mask"]) for item in preds]
                 scores=[item["score"] for item in preds]
                 raw_img=unnormalize(batch["img"], *cfg["data"]["train"]["pipeline"]["normalize"])
-                vis_img=vis_masks(raw_img.copy(),masks,bboxes,scores)
-                cv2.imwrite(f"vis_results/vis{i}.png",vis_img)
-        print(eval_results)
+                vis_img=vis_results(raw_img.copy(),masks,bboxes,scores)
+                save_image(vis_img, f"vis_results/vis{i}.png")
+print(eval_results)
