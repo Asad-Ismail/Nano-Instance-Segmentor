@@ -30,25 +30,27 @@ def generate_random_color():
     """Generate a random RGB color."""
     return [np.random.randint(0, 255) for _ in range(3)]
 
-def apply_mask(img, mask, bbox, score, mask_threshold=0.2, box_threshold=0.5):
-    x_min, y_min, x_max, y_max = map(int, bbox)
+def vis_results(img, masks, bboxs, scores, mask_threshold=0.2, box_threshold=0.5):
     img_height, img_width, _ = img.shape
 
-    if score < box_threshold:
-        print("Filtering using box threshold")
-        return img
+    for mask, bbox, score in zip(masks, bboxs,scores):
+        x_min, y_min, x_max, y_max = map(int, bbox)
 
-    x_min, x_max = max(0, x_min), min(x_max+1, img_width)
-    y_min, y_max = max(0, y_min), min(y_max+1, img_height)
+        if score < box_threshold:
+            print("Filtering using box threshold")
+            return img
 
-    width, height = x_max - x_min, y_max - y_min
+        x_min, x_max = max(0, x_min), min(x_max+1, img_width)
+        y_min, y_max = max(0, y_min), min(y_max+1, img_height)
 
-    mask = cv2.resize(mask[0,...], (width, height), interpolation = cv2.INTER_CUBIC)
-    mask[mask < mask_threshold] = 0
-    binary_mask = mask > 0
+        width, height = x_max - x_min, y_max - y_min
 
-    color = generate_random_color()
-    img[y_min:y_max, x_min:x_max][binary_mask.squeeze()] = color
+        mask = cv2.resize(mask[0,...], (width, height), interpolation = cv2.INTER_CUBIC)
+        mask[mask < mask_threshold] = 0
+        binary_mask = mask > 0
+
+        color = generate_random_color()
+        img[y_min:y_max, x_min:x_max][binary_mask.squeeze()] = color
     cv2.rectangle(img, (x_min, y_min), (x_max, y_max), color, 2)
 
     return img
@@ -68,9 +70,8 @@ img = load_image(image_path)
 # Load model and run inference
 model_path = "segmentor.onnx"
 ort_session = load_model(model_path)
-bbox, masks, labels, scores = run_inference(ort_session, img)
-
+bboxs, masks, labels, scores = run_inference(ort_session, img)
 # Apply masks to image and save
 img = cv2.imread(image_path)
-img = visualize_masks(img, masks, bbox, scores)
-save_image(img, "onnx.png")
+img = vis_results(img, masks, bboxs, scores)
+save_image(img, "vis_results/onnx.png")
