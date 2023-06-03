@@ -1,124 +1,99 @@
 import sys
 import time
-import warnings
 from pathlib import Path
-import cv2
-import numpy as np
-import torch
-from openvino.runtime import Core
 import onnxruntime
-from pathlib import Path
+from openvino.runtime import Core
 from utils import load_np_image
 
-image_path = "data/cucumbers/113.png"
-normalized_input_image = load_np_image(image_path)
-
-# Onnx model
-onnx_path = "segmentor.onnx"
-#openvinomodel
-ir_path=Path("irmodel/segmentor.xml")
-
-ie = Core()
-
-print(f"Available devices on this machine are ")
-devices = ie.available_devices
-for device in devices:
-    device_name = ie.get_property(device, "FULL_DEVICE_NAME")
-    print(f"{device}: {device_name}")
+def get_device_info(runtime_engine: Core):
+    print("Available devices on this machine are:")
+    devices = runtime_engine.available_devices
+    for device in devices:
+        device_name = runtime_engine.get_property(device, "FULL_DEVICE_NAME")
+        print(f"{device}: {device_name}")
 
 
-## ONNX model in ONNX runtime
-print(f"Loading ONNX model in ONNX runtime!!")
-ort_session = onnxruntime.InferenceSession(onnx_path)
-ort_inputs = {ort_session.get_inputs()[0].name: normalized_input_image}
-print(f"Success!!")
+def load_model_in_openvino(runtime_engine: Core, model_path: Path, device: str):
+    print(f"Loading model from {model_path} in openvino runtime!!")
+    model = runtime_engine.read_model(model=model_path)
+    compiled_model = runtime_engine.compile_model(model=model, device_name=device)
+    output_layer = compiled_model.output(0)
+    print("Success!!")
+    return compiled_model, output_layer
 
 
-## ONNX model in openvino runtime
-# Load the network to OpenVINO Runtime.
-print(f"Loading ONNX model in openvino runtime!!")
-ie = Core()
-model_onnx = ie.read_model(model=onnx_path)
-compiled_model_onnx = ie.compile_model(model=model_onnx, device_name="CPU")
-output_layer_onnx = compiled_model_onnx.output(0)
-# Run inference on the input image.
-res_onnx = compiled_model_onnx([normalized_input_image])[output_layer_onnx]
-print(f"Success!!")
-
-# Openvino model in openvino runtime
-# Load the network in OpenVINO Runtime.
-print(f"Loading Openvino model in openvino runtime!!")
-ie = Core()
-model_ir = ie.read_model(model=ir_path)
-compiled_model_ir = ie.compile_model(model=model_ir, device_name="CPU")
-# Get input and output layers.
-output_layer_ir = compiled_model_ir.output(0)
-# Run inference on the input image.
-res_ir = compiled_model_ir([normalized_input_image])[output_layer_ir]
-print(f"Success!!")
-
-## Runtime comparison
-num_images = 1000
+def load_model_in_onnxruntime(model_path: str):
+    print(f"Loading ONNX model in ONNX runtime!!")
+    session = onnxruntime.InferenceSession(model_path)
+    print("Success!!")
+    return session
 
 
-
-start = time.perf_counter()
-for _ in range(num_images):
-    ort_outs = ort_session.run(None, ort_inputs)
-end = time.perf_counter()
-time_onnx = end - start
-print(
-    f"ONNX model in ONNX Runtime/CPU: {time_onnx/num_images:.3f} "
-    f"seconds per image, FPS: {num_images/time_onnx:.2f}"
-)
-
-
-start = time.perf_counter()
-for _ in range(num_images):
-    compiled_model_onnx([normalized_input_image])
-end = time.perf_counter()
-time_onnx = end - start
-print(
-    f"ONNX model in OpenVINO Runtime/CPU: {time_onnx/num_images:.3f} "
-    f"seconds per image, FPS: {num_images/time_onnx:.2f}"
-)
-
-start = time.perf_counter()
-for _ in range(num_images):
-    compiled_model_ir([normalized_input_image])
-end = time.perf_counter()
-time_ir = end - start
-print(
-    f"OpenVINO IR model in OpenVINO Runtime/CPU: {time_ir/num_images:.3f} "
-    f"seconds per image, FPS: {num_images/time_ir:.2f}"
-)
-
-
-"""
-GPU is not working now :(
-
-if "GPU" in ie.available_devices:
-    compiled_model_onnx_gpu = ie.compile_model(model=model_onnx, device_name="GPU")
+def run_inference(compiled_model, input_image, output_layer=None, num_images=1000):
     start = time.perf_counter()
     for _ in range(num_images):
-        compiled_model_onnx_gpu([normalized_input_image])
+        if output_layer:
+            compiled_model([input_image])[output_layer]
+        else:
+            compiled_model.run(None, {"images": input_image})
     end = time.perf_counter()
-    time_onnx_gpu = end - start
+    elapsed_time = end - start
+    return elapsed_time
+
+
+def print_inference_stats(model_name: str, device: str, elapsed_time: float, num_images: int):
     print(
-        f"ONNX model in OpenVINO/GPU: {time_onnx_gpu/num_images:.3f} "
-        f"seconds per image, FPS: {num_images/time_onnx_gpu:.2f}"
+        f"{model_name} in {device}: {elapsed_time/num_images:.3f} "
+        f"seconds per image, FPS: {num_images/elapsed_time:.2f}"
     )
 
-    print(f"normalized input shape is {normalized_input_image.shape}")
-    compiled_model_ir_gpu = ie.compile_model(model=model_ir, device_name="GPU")
-    start = time.perf_counter()
-    for _ in range(num_images):
-        compiled_model_ir_gpu([normalized_input_image])
-    end = time.perf_counter()
-    time_ir_gpu = end - start
-    print(
-        f"IR model in OpenVINO/GPU: {time_ir_gpu/num_images:.3f} "
-        f"seconds per image, FPS: {num_images/time_ir_gpu:.2f}"
-    )
+def main():
+    # Set paths
+    image_path = "data/cucumbers/113.png"
+    onnx_path = "segmentor.onnx"
+    ir_path = Path("irmodel/segmentor.xml")
+    
+    # Load image
+    normalized_input_image = load_np_image(image_path)
+    
+    # Initialize runtime engine
+    runtime_engine = Core()
+    
+    # Print device info
+    get_device_info(runtime_engine)
 
-"""
+    # Load ONNX model in ONNX Runtime
+    ort_session = load_model_in_onnxruntime(onnx_path)
+
+    # Load ONNX model in OpenVINO
+    compiled_model_onnx, output_layer_onnx = load_model_in_openvino(runtime_engine, onnx_path, "CPU")
+
+    # Load OpenVINO model in OpenVINO
+    compiled_model_ir, output_layer_ir = load_model_in_openvino(runtime_engine, ir_path, "CPU")
+
+    # Run inferences and print stats
+    num_images = 1000
+    elapsed_time = run_inference(ort_session, normalized_input_image, num_images=num_images)
+    print_inference_stats("ONNX model", "ONNX Runtime/CPU", elapsed_time, num_images)
+
+    elapsed_time = run_inference(compiled_model_onnx, normalized_input_image, output_layer_onnx, num_images=num_images)
+    print_inference_stats("ONNX model", "OpenVINO Runtime/CPU", elapsed_time, num_images)
+
+    elapsed_time = run_inference(compiled_model_ir, normalized_input_image, output_layer_ir, num_images=num_images)
+    print_inference_stats("OpenVINO IR model", "OpenVINO Runtime/CPU", elapsed_time, num_images)
+
+    """
+    GPU is not working now :(
+    
+    if "GPU" in runtime_engine.available_devices:
+        compiled_model_onnx_gpu, _ = load_model_in_openvino(runtime_engine, onnx_path, "GPU")
+        elapsed_time = run_inference(compiled_model_onnx_gpu, normalized_input_image, output_layer_onnx, num_images=num_images)
+        print_inference_stats("ONNX model", "OpenVINO/GPU", elapsed_time, num_images)
+
+        compiled_model_ir_gpu, _ = load_model_in_openvino(runtime_engine, ir_path, "GPU")
+        elapsed_time = run_inference(compiled_model_ir_gpu, normalized_input_image, output_layer_ir, num_images=num_images)
+        print_inference_stats("IR model", "OpenVINO/GPU", elapsed_time, num_images)
+    """
+
+if __name__ == "__main__":
+    main()
