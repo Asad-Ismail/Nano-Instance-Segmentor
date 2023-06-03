@@ -31,6 +31,7 @@ import numpy as np
 import cv2
 from utils import vis_results,generate_random_color,unnormalize,save_image
 
+
 # Configurations
 torch.backends.cudnn.enabled = True
 torch.backends.cudnn.benchmark = True
@@ -153,4 +154,3 @@ for i,batch in enumerate(train_dataloader):
                 raw_img=unnormalize(batch["img"], *cfg["data"]["train"]["pipeline"]["normalize"])
                 vis_img=vis_results(raw_img.copy(),masks,bboxes,scores)
                 save_image(vis_img, f"vis_results/vis{i}.png")
-print(eval_results)
