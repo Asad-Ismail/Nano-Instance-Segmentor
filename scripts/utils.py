@@ -2,7 +2,10 @@
 import cv2
 import numpy as np
 import sys
+import torch 
+import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from nanodet.data.transform import PipelineInference
 from nanodet.data.transform.color import _normalize
 
 

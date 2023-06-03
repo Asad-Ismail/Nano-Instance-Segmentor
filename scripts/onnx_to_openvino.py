@@ -4,48 +4,8 @@ import subprocess
 import cv2
 import numpy as np
 import warnings
-from nanodet.data.transform.color import _normalize
+from utils import load_np_image,generate_random_color,vis_results,save_image
 
-
-def load_image(image_path):
-    img = cv2.imread(image_path)
-    img = img.astype(np.float32) / 255
-    img = _normalize(img, mean=[103.53, 116.28, 123.675], std=[57.375, 57.12, 58.395])
-    img = img.transpose(2, 0, 1)
-    img = img[np.newaxis,...]
-    return img
-
-def generate_random_color():
-    """Generate a random RGB color."""
-    return [np.random.randint(0, 255) for _ in range(3)]
-
-def save_image(img, path):
-    cv2.imwrite(path, img[...,::-1])
-
-def vis_results(img, masks, bboxs, scores, mask_threshold=0.2, box_threshold=0.5):
-    img_height, img_width, _ = img.shape
-
-    for mask, bbox, score in zip(masks, bboxs,scores):
-        x_min, y_min, x_max, y_max = map(int, bbox)
-
-        if score < box_threshold:
-            print("Filtering using box threshold")
-            return img
-
-        x_min, x_max = max(0, x_min), min(x_max+1, img_width)
-        y_min, y_max = max(0, y_min), min(y_max+1, img_height)
-
-        width, height = x_max - x_min, y_max - y_min
-
-        mask = cv2.resize(mask[0,...], (width, height), interpolation = cv2.INTER_CUBIC)
-        mask[mask < mask_threshold] = 0
-        binary_mask = mask > 0
-
-        color = generate_random_color()
-        img[y_min:y_max, x_min:x_max][binary_mask.squeeze()] = color
-        cv2.rectangle(img, (x_min, y_min), (x_max, y_max), color, 2)
-
-    return img
 
 onnx_path="segmentor.onnx"
 model_path="irmodel"
@@ -83,7 +43,7 @@ output_layer_ir3 = compiled_model_ir.output(3)
 
 
 image_path = "data/cucumbers/113.png"
-img = load_image(image_path)
+img = load_np_image(image_path)
 res = compiled_model_ir([img])
 
 bboxs=res[output_layer_ir0]

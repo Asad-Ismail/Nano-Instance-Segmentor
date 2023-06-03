@@ -2,9 +2,12 @@ import cv2
 import torch
 import numpy as np
 import onnxruntime
-from nanodet.data.transform import PipelineInference
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from nanodet.model.arch import build_model
 from nanodet.util import Logger, cfg, load_config, load_model_weight
+from utils import load_tensor_image
 import onnxsim
 import onnx
 import warnings
@@ -34,6 +37,7 @@ def main():
 
     # Load and process image
     img_tensor = load_tensor_image(image_path, cfg)
+    print(f"Loaded tensor shape is {img_tensor.shape}")
 
     # Load model
     model = load_model(cfg, model_path)

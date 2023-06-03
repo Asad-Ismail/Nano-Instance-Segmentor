@@ -194,3 +194,4 @@ for i,batch in enumerate(train_dataloader):
                 raw_img=unnormalize(batch["img"], *cfg["data"]["train"]["pipeline"]["normalize"])
                 vis_img=vis_masks(raw_img.copy(),masks,bboxes,scores)
                 cv2.imwrite(f"vis_results/vis{i}.png",vis_img)
+        print(eval_results)
