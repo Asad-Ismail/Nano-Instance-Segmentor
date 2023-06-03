@@ -18,15 +18,6 @@ out_path = "segmentor.onnx"
 input_shape = (512, 512)
 image_path = "data/cucumbers/113.png"
 
-def load_image_and_process(image_path, cfg):
-    img = cv2.imread(image_path)
-    img_info = {"height": img.shape[0], "width": img.shape[1]}
-    meta = dict(img_info=img_info, raw_img=img, img=img)
-
-    pipeline = PipelineInference(cfg.data.val.pipeline, cfg.data.val.keep_ratio)
-    meta = pipeline(meta, cfg.data.val.input_size)
-    img_tensor = torch.from_numpy(meta["img"].transpose(2, 0, 1)).unsqueeze(0)
-    return img_tensor
 
 def load_model(cfg, model_path):
     logger = Logger(-1, cfg.save_dir, False)
@@ -42,7 +33,7 @@ def main():
     load_config(cfg, cfg_path)
 
     # Load and process image
-    img_tensor = load_image_and_process(image_path, cfg)
+    img_tensor = load_tensor_image(image_path, cfg)
 
     # Load model
     model = load_model(cfg, model_path)

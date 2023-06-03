@@ -11,6 +11,8 @@ from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.utilities.distributed import rank_zero_only
 import pytorch_lightning as pl
 import torch
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from nanodet.data.collate import naive_collate
 from nanodet.data.dataset import build_dataset
 from nanodet.model.arch import build_model

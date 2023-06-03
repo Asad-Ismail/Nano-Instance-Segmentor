@@ -8,18 +8,10 @@ import torch
 from openvino.runtime import Core
 import onnxruntime
 from pathlib import Path
-from nanodet.data.transform.color import _normalize
-
-def load_image(image_path):
-    img = cv2.imread(image_path)
-    img = img.astype(np.float32) / 255
-    img = _normalize(img, mean=[103.53, 116.28, 123.675], std=[57.375, 57.12, 58.395])
-    img = img.transpose(2, 0, 1)
-    img = img[np.newaxis,...]
-    return img
+from utils import load_np_image
 
 image_path = "data/cucumbers/113.png"
-normalized_input_image = load_image(image_path)
+normalized_input_image = load_np_image(image_path)
 
 # Onnx model
 onnx_path = "segmentor.onnx"
