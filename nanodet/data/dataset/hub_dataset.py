@@ -37,7 +37,9 @@ class CocoHub(COCO):
 
 
 class HubDataset(CocoDataset):
-    def __init__(self, class_names, **kwargs):
+    def __init__(self, class_names,**kwargs):
+        print(f"My keys args")
+        print(kwargs)
         self.class_names = class_names
         #src="hub://aismail2/cucumber_OD"
         src=kwargs["hub_src"]
@@ -72,11 +74,19 @@ class HubDataset(CocoDataset):
             image=d.images.numpy()
             image=cv2.resize(image,(self.img_sz,self.img_sz))
             if self.save_imgs:
+                if len(image.shape) == 3:
+                    image=image[...,::-1]
                 cv2.imwrite(os.path.join(self.img_path,f"{i}.png"),image)
             masks=d.masks.numpy().astype(np.uint8)*255
+            labels=d.categories.numpy().astype(np.long)
 
             file_name = f"{i}.png"
-            height,width,_=image.shape
+
+            if len(image.shape) == 3:
+                height, width, _ = image.shape
+            elif len(image.shape) == 2:
+                height, width = image.shape
+
             info = {
                 "file_name": file_name,
                 "height": height,
@@ -84,7 +94,6 @@ class HubDataset(CocoDataset):
                 "id": i + 1,
             }
             image_info.append(info)
-            
             for j in range(masks.shape[-1]):
                 mask=masks[...,j]
                 mask=cv2.resize(mask,(self.img_sz,self.img_sz),cv2.INTER_NEAREST)//255
@@ -92,6 +101,9 @@ class HubDataset(CocoDataset):
                 nzeros=np.nonzero(mask)
                 ys=nzeros[0]
                 xs=nzeros[1]
+                ## empty annotation
+                if len(ys)==0:
+                    continue
                 ymin=min(ys)
                 ymax=max(ys)
                 xmin=min(xs)
@@ -108,7 +120,7 @@ class HubDataset(CocoDataset):
                 ann = {
                     "image_id": i + 1,
                     "bbox": coco_box,
-                    "category_id": 1,
+                    "category_id": labels[j],
                     "iscrowd": 0,
                     "id": ann_id,
                     "area": coco_box[2] * coco_box[3],

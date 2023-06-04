@@ -5,7 +5,7 @@
 #           AP_small = 0.083
 #               AP_m = 0.278
 #               AP_l = 0.451
-save_dir: workspace/nanodet-plus-cucumber_512_test2
+save_dir: workspace/nanodet-segmentor-coco
 model:
   weight_averager:
     name: ExpMovingAverager
@@ -51,7 +51,7 @@ model:
           loss_weight: 0.25
         loss_bbox:
           name: GIoULoss
-          loss_weight: 2.0
+          loss_weight: 4.0
     # Auxiliary head, only use in training time.
     aux_head:
       name: SimpleConvHead
@@ -67,8 +67,10 @@ data:
     name: hub
     # Hub source is required if dtype is hub
     #hub_src: "hub://aismail2/cucumber_OD"
-    hub_src: hub://aismail2/Ballon_train
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
+    #hub_src: hub://aismail2/Ballon_train
+    #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
+    hub_src: hub://activeloop/coco-train
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_train
     ann_path: coco/annotations/instances_train2017.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
@@ -86,8 +88,9 @@ data:
       normalize: [[103.53, 116.28, 123.675], [57.375, 57.12, 58.395]]
   val:
     name: hub
-    hub_src: hub://aismail2/Ballon_val
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_val
+    #hub_src: hub://aismail2/Ballon_val
+    hub_src: hub://activeloop/coco-train
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_val
     ann_path: coco/annotations/instances_val2017.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
@@ -96,7 +99,7 @@ data:
 device:
   gpu_ids: [0] # Set like [0, 1, 2, 3] if you have multi-GPUs
   workers_per_gpu: 4
-  batchsize_per_gpu: 16
+  batchsize_per_gpu: 4
   precision: 32 # set to 16 to use AMP training
 schedule:
 #  resume:
@@ -109,7 +112,7 @@ schedule:
     name: linear
     steps: 500
     ratio: 0.0001
-  total_epochs: 200
+  total_epochs: 500
   lr_schedule:
     name: CosineAnnealingLR
     T_max: 3000

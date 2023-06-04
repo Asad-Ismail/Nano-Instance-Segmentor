@@ -57,6 +57,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         load_mosaic: bool = False,
         mode: str = "train",
         multi_scale: Optional[Tuple[float, float]] = None,
+        **kwargs,
     ):
         assert mode in ["train", "val", "test"]
         self.img_path = img_path

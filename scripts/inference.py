@@ -59,7 +59,7 @@ if cfg.model.arch.head.num_classes != len(cfg.class_names):
 
 # Prepare data
 print("Setting up data...")
-train_dataset = build_dataset(cfg.data.train, "train", class_names=cfg.class_names)
+train_dataset = build_dataset(cfg.data.val, "train", class_names=cfg.class_names)
 
 train_dataloader = DataLoader(
     train_dataset,
