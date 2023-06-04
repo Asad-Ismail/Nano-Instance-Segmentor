@@ -65,7 +65,10 @@ model:
 data:
   train:
     name: hub
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/cucumbers
+    # Hub source is required if dtype is hub
+    #hub_src: "hub://aismail2/cucumber_OD"
+    hub_src: hub://aismail2/Ballon_train
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
     ann_path: coco/annotations/instances_train2017.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
@@ -83,7 +86,8 @@ data:
       normalize: [[103.53, 116.28, 123.675], [57.375, 57.12, 58.395]]
   val:
     name: hub
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/cucumbers
+    hub_src: hub://aismail2/Ballon_val
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_val
     ann_path: coco/annotations/instances_val2017.json
     input_size: [512,512] #[w,h]
     keep_ratio: False

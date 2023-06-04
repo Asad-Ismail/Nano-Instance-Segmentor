@@ -39,7 +39,8 @@ class CocoHub(COCO):
 class HubDataset(CocoDataset):
     def __init__(self, class_names, **kwargs):
         self.class_names = class_names
-        src="hub://aismail2/cucumber_OD"
+        #src="hub://aismail2/cucumber_OD"
+        src=kwargs["hub_src"]
         self.ds = hub.load(src)
         self.img_sz=kwargs["input_size"][0]
         self.seg_sz=64
@@ -66,8 +67,8 @@ class HubDataset(CocoDataset):
         ann_id = 1
         
         for i,d in tqdm(enumerate(self.ds)):
-            if (i>20):
-                break
+            #if (i>20):
+            #    break
             image=d.images.numpy()
             image=cv2.resize(image,(self.img_sz,self.img_sz))
             if self.save_imgs:
