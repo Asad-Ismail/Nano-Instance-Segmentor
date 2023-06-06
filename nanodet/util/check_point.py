@@ -49,6 +49,9 @@ def load_model_weight(model, checkpoint, logger):
                     )
                 )
                 state_dict[k] = model_state_dict[k]
+            else:
+                logger.log("Successfully loaded {}!".format(k))
+            
         else:
             logger.log("Drop parameter {}.".format(k))
     for k in model_state_dict:

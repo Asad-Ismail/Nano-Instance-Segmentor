@@ -6,6 +6,9 @@ __pycache__/
 **.pyc
 **irmodel
 **.onnx
+*.pyc
+*.ckpt
+
 
 
 # C extensions

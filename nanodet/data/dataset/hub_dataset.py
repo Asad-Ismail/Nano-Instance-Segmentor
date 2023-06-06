@@ -78,7 +78,8 @@ class HubDataset(CocoDataset):
                     image=image[...,::-1]
                 cv2.imwrite(os.path.join(self.img_path,f"{i}.png"),image)
             masks=d.masks.numpy().astype(np.uint8)*255
-            labels=d.categories.numpy().astype(np.long)
+            #labels=d.categories.numpy().astype(np.long)
+            #labels=d.labels.numpy().astype(np.long)
 
             file_name = f"{i}.png"
 
@@ -120,7 +121,7 @@ class HubDataset(CocoDataset):
                 ann = {
                     "image_id": i + 1,
                     "bbox": coco_box,
-                    "category_id": labels[j],
+                    "category_id": 1,
                     "iscrowd": 0,
                     "id": ann_id,
                     "area": coco_box[2] * coco_box[3],

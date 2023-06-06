@@ -19,6 +19,7 @@ from .coco import CocoDataset
 from .xml_dataset import XMLDataset
 from .yolo import YoloDataset
 from .hub_dataset import HubDataset
+from .torchvision_dataset import torchDataset
 
 
 def build_dataset(cfg, mode,class_names=None):
@@ -48,5 +49,7 @@ def build_dataset(cfg, mode,class_names=None):
         return XMLDataset(mode=mode, **dataset_cfg)
     elif name =="hub":
         return HubDataset(mode=mode,class_names=class_names,**dataset_cfg)
+    elif name =="torchvision":
+        return torchDataset(mode=mode,class_names=class_names,**dataset_cfg)
     else:
         raise NotImplementedError("Unknown dataset type!")

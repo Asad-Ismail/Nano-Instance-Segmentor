@@ -64,14 +64,17 @@ model:
       reg_max: 7
 data:
   train:
-    name: hub
+    name: torchvision
     # Hub source is required if dtype is hub
     #hub_src: "hub://aismail2/cucumber_OD"
     #hub_src: hub://aismail2/Ballon_train
     #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
-    hub_src: hub://activeloop/coco-train
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_train
-    ann_path: coco/annotations/instances_train2017.json
+    #hub_src: hub://activeloop/coco-train
+    #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
+    #ann_path: coco/annotations/instances_train2017.json
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/train2017
+    dst_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_train
+    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/annotations/instances_train2017.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
     pipeline:
@@ -87,11 +90,12 @@ data:
       saturation: [0.5, 1.2]
       normalize: [[103.53, 116.28, 123.675], [57.375, 57.12, 58.395]]
   val:
-    name: hub
+    name: torchvision
     #hub_src: hub://aismail2/Ballon_val
-    hub_src: hub://activeloop/coco-train
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_val
-    ann_path: coco/annotations/instances_val2017.json
+    #hub_src: hub://activeloop/coco-train
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/val2017
+    dst_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_val
+    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/annotations/instances_val2017.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
     pipeline:
@@ -99,11 +103,11 @@ data:
 device:
   gpu_ids: [0] # Set like [0, 1, 2, 3] if you have multi-GPUs
   workers_per_gpu: 4
-  batchsize_per_gpu: 4
+  batchsize_per_gpu: 16
   precision: 32 # set to 16 to use AMP training
 schedule:
 #  resume:
-#  load_model:
+  load_model: "/home/ec2-user/SageMaker/Nano-Instance-Segmentor/nanodet_m_416.ckpt"
   optimizer:
     name: AdamW
     lr: 0.001
