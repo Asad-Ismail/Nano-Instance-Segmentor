@@ -72,7 +72,7 @@ data:
     #hub_src: hub://activeloop/coco-train
     #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
     #ann_path: coco/annotations/instances_train2017.json
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/train2017
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_train
     dst_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_train
     ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/annotations/instances_train2017.json
     input_size: [512,512] #[w,h]
@@ -93,7 +93,7 @@ data:
     name: torchvision
     #hub_src: hub://aismail2/Ballon_val
     #hub_src: hub://activeloop/coco-train
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/val2017
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_val
     dst_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_val
     ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/annotations/instances_val2017.json
     input_size: [512,512] #[w,h]
