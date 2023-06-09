@@ -171,9 +171,9 @@ class CocoSegmentationEvaluator:
         y_min, y_max = max(0, y_min), min(y_max+1, height)
 
         width, height = x_max - x_min, y_max - y_min
-
         mask = torch.from_numpy(mask).unsqueeze(0)
-        mask = F.interpolate(mask, size=(height, width), mode='bicubic', align_corners=True)
+        if height>0 and width>0:
+            mask = F.interpolate(mask, size=(height, width), mode='bicubic', align_corners=True)
         mask[mask < mask_threshold] = 0
         binary_mask = mask > 0
         binary_mask_np=binary_mask.squeeze(0).squeeze(0).cpu().numpy()
