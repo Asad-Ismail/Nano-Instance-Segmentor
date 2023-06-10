@@ -174,14 +174,15 @@ class CocoSegmentationEvaluator:
         mask = torch.from_numpy(mask).unsqueeze(0)
         if height>0 and width>0:
             mask = F.interpolate(mask, size=(height, width), mode='bicubic', align_corners=True)
-        mask[mask < mask_threshold] = 0
-        binary_mask = mask > 0
-        binary_mask_np=binary_mask.squeeze(0).squeeze(0).cpu().numpy()
-        binary_mask_np = binary_mask_np.astype(np.bool)
-        ## set binary mask in original image
-        img[y_min:y_max, x_min:x_max][binary_mask_np] = True
-
-        return img
+            mask[mask < mask_threshold] = 0
+            binary_mask = mask > 0
+            binary_mask_np=binary_mask.squeeze(0).squeeze(0).cpu().numpy()
+            binary_mask_np = binary_mask_np.astype(np.bool)
+            ## set binary mask in original image
+            img[y_min:y_max, x_min:x_max][binary_mask_np] = True
+            return img
+        else:
+            return img
     
 
     def results2json(self, results):
