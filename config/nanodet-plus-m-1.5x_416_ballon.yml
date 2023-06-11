@@ -1,11 +1,11 @@
-# nanodet-plus-m_320
-# COCO mAP(0.5:0.95) = 0.270
-#             AP_50  = 0.418
-#             AP_75  = 0.281
-#           AP_small = 0.083
-#               AP_m = 0.278
-#               AP_l = 0.451
-save_dir: workspace/nanodet-plus-m_320
+# nanodet-plus-m-1.5x_416
+# COCO mAP(0.5:0.95) = 0.341
+#             AP_50  = 0.506
+#             AP_75  = 0.357
+#           AP_small = 0.143
+#               AP_m = 0.363
+#               AP_l = 0.539
+save_dir: workspace/nanodet-plus-m-1.5x_416
 model:
   weight_averager:
     name: ExpMovingAverager
@@ -15,22 +15,22 @@ model:
     detach_epoch: 10
     backbone:
       name: ShuffleNetV2
-      model_size: 1.0x
+      model_size: 1.5x
       out_stages: [2,3,4]
       activation: LeakyReLU
     fpn:
       name: GhostPAN
-      in_channels: [116, 232, 464]
-      out_channels: 96
+      in_channels: [176, 352, 704]
+      out_channels: 128
       kernel_size: 5
       num_extra_level: 1
       use_depthwise: True
       activation: LeakyReLU
     head:
       name: NanoDetPlusHead
-      num_classes: 1
-      input_channel: 96
-      feat_channels: 96
+      num_classes: 80
+      input_channel: 128
+      feat_channels: 128
       stacked_convs: 2
       kernel_size: 5
       strides: [8, 16, 32, 64]
@@ -53,31 +53,27 @@ model:
     # Auxiliary head, only use in training time.
     aux_head:
       name: SimpleConvHead
-      num_classes: 1
-      input_channel: 192
-      feat_channels: 192
+      num_classes: 80
+      input_channel: 256
+      feat_channels: 256
       stacked_convs: 4
       strides: [8, 16, 32, 64]
       activation: LeakyReLU
       reg_max: 7
 data:
   train:
-    #name: CocoDataset
-    #img_path: coco/train2017
-    #ann_path: coco/annotations/instances_train2017.json
     name: hub
     hub_src: hub://aismail2/Ballon_train
     img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
     ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/annotations/instances_train2017.json
-
-    input_size: [320,320] #[w,h]
+    input_size: [416,416] #[w,h]
     keep_ratio: False
     pipeline:
       perspective: 0.0
-      #scale: [0.6, 1.4]
-      #stretch: [[0.8, 1.2], [0.8, 1.2]]
-      #rotation: 0
-      #shear: 0
+      scale: [0.6, 1.4]
+      stretch: [[0.8, 1.2], [0.8, 1.2]]
+      rotation: 0
+      shear: 0
       translate: 0.2
       flip: 0.5
       brightness: 0.2
@@ -85,26 +81,20 @@ data:
       saturation: [0.5, 1.2]
       normalize: [[103.53, 116.28, 123.675], [57.375, 57.12, 58.395]]
   val:
-    #name: CocoDataset
-    #img_path: coco/val2017
-    #ann_path: coco/annotations/instances_val2017.json
-
     name: hub
     hub_src: hub://aismail2/Ballon_val
     img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_val
     ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/annotations/instances_val2017.json
-    
-    input_size: [320,320] #[w,h]
+    input_size: [416,416] #[w,h]
     keep_ratio: False
     pipeline:
       normalize: [[103.53, 116.28, 123.675], [57.375, 57.12, 58.395]]
 device:
-  gpu_ids: [0] # Set like [0, 1, 2, 3] if you have multi-GPUs
+  gpu_ids: [0]
   workers_per_gpu: 10
   batchsize_per_gpu: 8
   precision: 32 # set to 16 to use AMP training
 schedule:
-  load_model: "/home/ec2-user/SageMaker/Nano-Instance-Segmentor/pretrain/nanodet-plus-m_320_checkpoint.ckpt"
 #  resume:
 #  load_model:
   optimizer:
