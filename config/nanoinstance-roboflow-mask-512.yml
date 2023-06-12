@@ -5,7 +5,7 @@
 #           AP_small = 0.083
 #               AP_m = 0.278
 #               AP_l = 0.451
-save_dir: workspace/nanodet-segmentor-pretrain_ballon_2x
+save_dir: workspace/nanodet-segmentor-roboflow
 model:
   weight_averager:
     name: ExpMovingAverager
@@ -15,12 +15,12 @@ model:
     detach_epoch: 10
     backbone:
       name: ShuffleNetV2
-      model_size: 2.0x
+      model_size: 1.0x
       out_stages: [2,3,4]
       activation: LeakyReLU
     fpn:
       name: GhostPAN
-      in_channels: [244, 488, 464]
+      in_channels: [116, 232, 464]
       out_channels: 96
       kernel_size: 5
       num_extra_level: 1
