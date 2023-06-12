@@ -20,6 +20,7 @@ from .xml_dataset import XMLDataset
 from .yolo import YoloDataset
 from .hub_dataset import HubDataset
 from .segmentation_coco import segmentationCoCo
+from .roboflow_dataset import segmentationRoboflow
 
 
 def build_dataset(cfg, mode,class_names=None):
@@ -51,5 +52,7 @@ def build_dataset(cfg, mode,class_names=None):
         return HubDataset(mode=mode,class_names=class_names,**dataset_cfg)
     elif name =="segmentationCoCo":
         return segmentationCoCo(mode=mode,class_names=class_names,**dataset_cfg)
+    elif name=="segmentationRoboflow":
+        return segmentationRoboflow(mode=mode,class_names=class_names,**dataset_cfg)
     else:
         raise NotImplementedError("Unknown dataset type!")
