@@ -8,6 +8,7 @@ __pycache__/
 **.onnx
 *.pyc
 *.ckpt
+**Windows-Instance-Segmentation-1
 
 
 
