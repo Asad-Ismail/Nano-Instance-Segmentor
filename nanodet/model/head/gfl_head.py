@@ -207,9 +207,7 @@ class GFLHead(nn.Module):
         return outputs
 
     def loss(self, preds, gt_meta):
-        cls_scores, bbox_preds = preds.split(
-            [self.num_classes, 4 * (self.reg_max + 1)], dim=-1
-        )
+        cls_scores, bbox_preds = preds.split([self.num_classes, 4 * (self.reg_max + 1)], dim=-1)
         device = cls_scores.device
         gt_bboxes = gt_meta["gt_bboxes"]
         gt_bboxes_ignore = gt_meta["gt_bboxes_ignore"]
@@ -297,7 +295,6 @@ class GFLHead(nn.Module):
         # FG cat_id: [0, num_classes -1], BG cat_id: num_classes
         bg_class_ind = self.num_classes
         pos_inds = torch.nonzero((labels >= 0) & (labels < bg_class_ind), as_tuple=False).squeeze(1)
-
         score = label_weights.new_zeros(labels.shape)
 
         if len(pos_inds) > 0:

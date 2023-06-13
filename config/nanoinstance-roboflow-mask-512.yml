@@ -92,7 +92,7 @@ data:
 device:
   gpu_ids: [0] # Set like [0, 1, 2, 3] if you have multi-GPUs
   workers_per_gpu: 4
-  batchsize_per_gpu: 12
+  batchsize_per_gpu: 2
   precision: 32 # set to 16 to use AMP training
 schedule:
 #  resume:
@@ -110,7 +110,7 @@ schedule:
     name: CosineAnnealingLR
     T_max: 3000
     eta_min: 0.00005
-  val_intervals: 5
+  val_intervals: 1
 grad_clip: 35
 evaluator:
   name: CocoSegmentationEvaluator
