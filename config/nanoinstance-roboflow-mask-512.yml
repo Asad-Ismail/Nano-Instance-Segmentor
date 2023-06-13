@@ -5,7 +5,7 @@
 #           AP_small = 0.083
 #               AP_m = 0.278
 #               AP_l = 0.451
-save_dir: workspace/nanodet-segmentor-roboflow
+save_dir: workspace/nanodet-segmentor-roboflow-lettuce
 model:
   weight_averager:
     name: ExpMovingAverager
@@ -30,7 +30,7 @@ model:
       mask_size: 64
     head:
       name: NanoSegHead
-      num_classes: 1
+      num_classes: 3
       input_channel: 96
       feat_channels: 96
       stacked_convs: 2
@@ -55,7 +55,7 @@ model:
     # Auxiliary head, only use in training time.
     aux_head:
       name: SimpleConvHead
-      num_classes: 1
+      num_classes: 3
       input_channel: 192
       feat_channels: 192
       stacked_convs: 4
@@ -65,8 +65,8 @@ model:
 data:
   train:
     name: segmentationRoboflow
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Windows-Instance-Segmentation-1/train
-    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Windows-Instance-Segmentation-1/train/_annotations.coco.json
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/NLsuffiiciency-1/train
+    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/NLsuffiiciency-1/train/_annotations.coco.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
     pipeline:
@@ -83,8 +83,8 @@ data:
       normalize: [[103.53, 116.28, 123.675], [57.375, 57.12, 58.395]]
   val:
     name: segmentationRoboflow
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Windows-Instance-Segmentation-1/valid
-    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Windows-Instance-Segmentation-1/valid/_annotations.coco.json
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/NLsuffiiciency-1/valid
+    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/NLsuffiiciency-1/valid/_annotations.coco.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
     pipeline:
@@ -118,4 +118,4 @@ evaluator:
 log:
   interval: 2
 
-class_names: ['Window']
+class_names: ['NLsuffiiciency', 'deficient', 'sufficient']
