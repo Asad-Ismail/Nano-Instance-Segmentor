@@ -9,6 +9,8 @@ __pycache__/
 *.pyc
 *.ckpt
 **Windows-Instance-Segmentation-1
+**heart-segmentation-1
+**NLsuffiiciency-1
 
 
 

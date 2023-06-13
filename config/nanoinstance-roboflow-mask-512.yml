@@ -118,4 +118,4 @@ evaluator:
 log:
   interval: 2
 
-class_names: ['windows']
+class_names: ['Window']
