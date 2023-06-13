@@ -51,7 +51,7 @@ model:
           loss_weight: 0.25
         loss_bbox:
           name: GIoULoss
-          loss_weight: 4.0
+          loss_weight: 2.0
     # Auxiliary head, only use in training time.
     aux_head:
       name: SimpleConvHead
@@ -118,4 +118,4 @@ evaluator:
 log:
   interval: 2
 
-class_names: ['cucumber']
+class_names: ['windows']

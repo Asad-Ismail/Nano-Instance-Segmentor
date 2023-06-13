@@ -18,7 +18,19 @@ from typing import Dict, Optional, Tuple
 import numpy as np
 from torch.utils.data import Dataset
 
-from ..transform import Pipeline
+
+import sys
+import os
+
+# add the parent directory to the Python path
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(parent_dir)
+
+from transform import Pipeline
+
+
+
+#from ..transform import Pipeline
 
 
 class BaseDataset(Dataset, metaclass=ABCMeta):
