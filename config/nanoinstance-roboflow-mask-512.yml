@@ -5,7 +5,7 @@
 #           AP_small = 0.083
 #               AP_m = 0.278
 #               AP_l = 0.451
-save_dir: workspace/nanodet-segmentor-roboflow-cone
+save_dir: workspace/nanodet-segmentor-person
 model:
   weight_averager:
     name: ExpMovingAverager
@@ -65,8 +65,8 @@ model:
 data:
   train:
     name: segmentationRoboflow
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Please-1/train
-    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Please-1/train/_annotations.coco.json
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/PennFundaCoco/train
+    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/PennFundaCoco/annotations/instances_train.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
     pipeline:
@@ -83,8 +83,8 @@ data:
       normalize: [[103.53, 116.28, 123.675], [57.375, 57.12, 58.395]]
   val:
     name: segmentationRoboflow
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Please-1/valid
-    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Please-1/valid/_annotations.coco.json
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/PennFundaCoco/val
+    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/PennFundaCoco/annotations/instances_val.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
     pipeline:
@@ -92,7 +92,7 @@ data:
 device:
   gpu_ids: [0] # Set like [0, 1, 2, 3] if you have multi-GPUs
   workers_per_gpu: 4
-  batchsize_per_gpu: 4
+  batchsize_per_gpu: 20
   precision: 32 # set to 16 to use AMP training
 schedule:
 #  resume:
@@ -118,4 +118,4 @@ evaluator:
 log:
   interval: 2
 
-class_names: ['cone']
+class_names: ['Person']

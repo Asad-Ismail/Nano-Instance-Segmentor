@@ -23,14 +23,14 @@ import sys
 import os
 
 # add the parent directory to the Python path
-#parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-#sys.path.append(parent_dir)
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(parent_dir)
 
-#from transform import Pipeline
+from transform import Pipeline
 
 
 
-from ..transform import Pipeline
+#from ..transform import Pipeline
 
 
 class BaseDataset(Dataset, metaclass=ABCMeta):

@@ -18,7 +18,7 @@ import cv2
 import numpy as np
 import torch
 from pycocotools.coco import COCO
-from .base import BaseDataset
+from base import BaseDataset
 
 
 class CocoDataset(BaseDataset):
