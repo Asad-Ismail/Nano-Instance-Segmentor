@@ -96,7 +96,7 @@ device:
   precision: 32 # set to 16 to use AMP training
 schedule:
 #  resume:
-  #load_model: "/home/ec2-user/SageMaker/Nano-Instance-Segmentor/pretrain/model_last.ckpt"
+  load_model: "/home/ec2-user/SageMaker/Nano-Instance-Segmentor/pretrain/model_last.ckpt"
   optimizer:
     name: AdamW
     lr: 0.001
