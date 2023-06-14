@@ -153,4 +153,4 @@ for i,batch in enumerate(train_dataloader):
                 scores=[item["score"] for item in preds]
                 raw_img=unnormalize(batch["img"], *cfg["data"]["train"]["pipeline"]["normalize"])
                 vis_img=vis_results(raw_img.copy(),masks,bboxes,scores)
-                save_image(vis_img, f"vis_results/vis{i}.png")
+                save_image(vis_img, f"vis_results/lettuce/vis{i}.png")
