@@ -63,8 +63,20 @@ def color_aug_and_norm(meta, kwargs):
 
     if "saturation" in kwargs and random.randint(0, 1):
         img = random_saturation(img, *kwargs["saturation"])
-    # cv2.imshow('trans', img)
-    # cv2.waitKey(0)
+
+    print('Before normalization:')
+    print('Min:', img.min())
+    print('Min:', img.max())
+    print('Mean:', np.mean(img, axis=(0, 1)))
+    print('Standard deviation:', np.std(img, axis=(0, 1)))
+
     img = _normalize(img, *kwargs["normalize"])
+
+    print('After normalization:')
+    print('Min:', img.min())
+    print('Min:', img.max())
+    print('Mean:', np.mean(img, axis=(0, 1)))
+    print('Standard deviation:', np.std(img, axis=(0, 1)))
+
     meta["img"] = img
     return meta
