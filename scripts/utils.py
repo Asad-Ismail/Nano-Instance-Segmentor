@@ -32,7 +32,7 @@ def generate_random_color():
     return [np.random.randint(0, 255) for _ in range(3)]
 
 
-def vis_results(img, masks, bboxs, scores, mask_threshold=0.2, box_threshold=0.5):
+def vis_results(img, masks, bboxs, scores, mask_threshold=0.1, box_threshold=0.5):
     img_height, img_width, _ = img.shape
 
     for mask, bbox, score in zip(masks, bboxs,scores):
@@ -67,6 +67,14 @@ def unnormalize(img, mean, std):
     mean = np.array(mean, dtype=np.float32).reshape(-1, 1, 1)
     std = np.array(std, dtype=np.float32).reshape(-1, 1, 1)
     img = img * std + mean
+    img = np.clip(img, 0, 255)  # Clip values to the range [0, 255]
+    img = img.transpose(1,2,0).astype(np.uint8)
+    return img
+
+def unnormalize_simple(img):
+    img = img.detach().squeeze(0).numpy()
+    img = img.astype(np.float32)
+    img*=255
     img = np.clip(img, 0, 255)  # Clip values to the range [0, 255]
     img = img.transpose(1,2,0).astype(np.uint8)
     return img

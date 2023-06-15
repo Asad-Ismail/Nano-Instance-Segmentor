@@ -8,6 +8,8 @@ from ..module.init_weights import normal_init
 from .gfl_head import GFLHead
 from ..loss.mask_loss import CombinedMaskLoss,MaskLoss
 from ...data.transform.warp import warp_boxes
+from torchvision.ops import box_iou
+
 
 
 class NanoDetSegmHead(GFLHead):
@@ -31,12 +33,14 @@ class NanoDetSegmHead(GFLHead):
         feat_channels=256,
         strides=[8, 16, 32],
         mask_sz=48,
+        freeze_mask=False,
         **kwargs
     ):
         self.share_cls_reg = share_cls_reg
         self.mask_sz=mask_sz
         self.activation = activation
         self.ConvModule = ConvModule if conv_type == "Conv" else DepthwiseConvModule
+        self.freeze_mask = freeze_mask 
         super(NanoDetSegmHead, self).__init__(
             num_classes,
             loss,
@@ -89,6 +93,11 @@ class NanoDetSegmHead(GFLHead):
         self.segm = nn.Conv2d(self.feat_channels, 1, 1, padding=0)
          # Segmentation loss
         self.calculate_mask_loss = MaskLoss()
+        if self.freeze_mask:  # Check if freeze_mask is True
+            for param in self.seg_convs.parameters():
+                param.requires_grad = False
+            for param in self.segm.parameters():
+                param.requires_grad = False
 
 
     def _build_seg_head(self):
@@ -158,7 +167,7 @@ class NanoDetSegmHead(GFLHead):
         boxes: A tensor of shape (N, 4) representing predicted bounding boxes, where N is the number of boxes.
         """
         cropped_masks = []
-        gt_mask=self.masks_to_image(gt_mask)
+        #gt_mask=self.masks_to_image(gt_mask)
         h, w = gt_mask.shape
         for box in boxes:
             x1, y1, x2, y2 = box.int()
@@ -245,6 +254,62 @@ class NanoDetSegmHead(GFLHead):
         else:
             mean_mask_loss = torch.tensor(0., device=features[0].device)
         return all_pred_masks, mean_mask_loss  # Return mean mask loss across all images
+
+
+    def process_mask_train_v2(self, preds, features, meta):
+        cls_scores, bbox_preds = preds.split([self.num_classes, 4 * (self.reg_max + 1)], dim=-1)
+        result_list = self.get_bboxes(cls_scores, bbox_preds, meta)
+        gt_masks = meta["gt_masks"]
+        gt_boxes = meta["gt_bboxes"]  # Add this line to get ground truth boxes
+
+        input_height, input_width = meta["img"].shape[2:]
+        feature_idx = 0
+        _, _, fh, fw = features[feature_idx].shape
+        spatial_scale = fh / input_height
+        output_size = (self.mask_sz, self.mask_sz)
+
+        all_pred_masks = []
+        all_boxes = []
+        mask_losses = []
+
+        for i, result in enumerate(result_list):
+            image_boxes = result[0]
+            if image_boxes.numel() > 0:
+                boxes = image_boxes[:, :4]
+                aligned_features = roi_align(features[feature_idx][i].unsqueeze(0), [boxes], output_size, spatial_scale=spatial_scale, sampling_ratio=-1)
+                pred_masks = self.seg_convs(aligned_features)
+                pred_masks = self.segm(pred_masks)
+
+                gt_boxes_tensor = torch.from_numpy(gt_boxes[i]).to(boxes)
+
+                ious = box_iou(boxes, gt_boxes_tensor)  # Compute IoU between predicted boxes and ground truth boxes
+                gt_assignment = ious.max(dim=1)[1]  # Assign each predicted box to a ground truth box
+
+                mask_losses = []
+                for idx, assign in enumerate(gt_assignment):
+                    gt_resized_mask = self.crop_and_resize_masks(gt_masks[i][assign], boxes[idx].unsqueeze(0), pred_masks.shape[-2:])
+                    mask_loss = self.calculate_mask_loss(pred_masks[idx].unsqueeze(0), gt_resized_mask)
+                    mask_losses.append(mask_loss)
+
+                if mask_losses:
+                    mean_mask_loss = torch.stack(mask_losses).mean()  # Return mean mask loss across all images
+                else:
+                    mean_mask_loss = torch.tensor(0., device=features[0].device)
+
+                all_pred_masks.append(pred_masks)
+                all_boxes.append(boxes)
+            else:
+                pred_masks = torch.tensor([], device=features[0].device)
+                boxes = torch.tensor([], device=features[0].device)
+                all_pred_masks.append(pred_masks)
+                all_boxes.append(boxes)
+
+        if mask_losses:
+            mean_mask_loss = torch.stack(mask_losses).mean()  # Return mean mask loss across all images
+        else:
+            mean_mask_loss = torch.tensor(0., device=features[0].device)
+        return all_pred_masks, mean_mask_loss
+
 
     ## Overwrite post processing
     def post_process(self, preds, pred_masks, meta):

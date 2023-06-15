@@ -29,7 +29,7 @@ from typing import Dict, Any
 from nanodet.model.weight_averager import build_weight_averager
 import numpy as np
 import cv2
-from utils import vis_results,generate_random_color,unnormalize,save_image
+from utils import vis_results,generate_random_color,unnormalize,unnormalize_simple,save_image
 
 
 # Configurations
@@ -59,7 +59,9 @@ if cfg.model.arch.head.num_classes != len(cfg.class_names):
 
 # Prepare data
 print("Setting up data...")
-train_dataset = build_dataset(cfg.data.val, "train", class_names=cfg.class_names)
+train_dataset = build_dataset(cfg.data.train, "train", class_names=cfg.class_names)
+
+print(f"Length of datast is {len(train_dataset)}")
 
 train_dataloader = DataLoader(
     train_dataset,
@@ -151,6 +153,7 @@ for i,batch in enumerate(train_dataloader):
                 bboxes=[item["bbox"] for item in preds]
                 masks=[np.array(item["mask"]) for item in preds]
                 scores=[item["score"] for item in preds]
-                raw_img=unnormalize(batch["img"], *cfg["data"]["train"]["pipeline"]["normalize"])
+                #raw_img=unnormalize(batch["img"], *cfg["data"]["train"]["pipeline"]["normalize"])
+                raw_img=unnormalize_simple(batch["img"])
                 vis_img=vis_results(raw_img.copy(),masks,bboxes,scores)
                 save_image(vis_img, f"vis_results/lettuce/vis{i}.png")

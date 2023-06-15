@@ -6,6 +6,7 @@ from ..fpn import build_fpn
 from ..head import build_head
 
 
+
 class OneStageDetectorSegmentor(nn.Module):
     def __init__(
         self,
@@ -61,9 +62,10 @@ class OneStageDetectorSegmentor(nn.Module):
     def forward_train(self, gt_meta):
         preds,features = self(gt_meta["img"])
         #masks = self.head.masks_process(preds,features,gt_meta)
-        _,mask_loss=self.head.process_mask_train(preds,features,gt_meta)
+        _,mask_loss=self.head.process_mask_train_v2(preds,features,gt_meta)
         loss, loss_states = self.head.loss(preds, gt_meta)
         # Add mask loss to loss dict
+        #mask_loss*=0
         loss+=mask_loss
         loss_states["MaskLoss"]=mask_loss
         return preds,features,loss, loss_states
