@@ -38,6 +38,7 @@ def load_model_weight(model, checkpoint, logger):
         model.module.state_dict() if hasattr(model, "module") else model.state_dict()
     )
 
+    total_loaded=0
     # check loaded parameters and created model parameters
     for k in state_dict:
         if k in model_state_dict:
@@ -50,7 +51,7 @@ def load_model_weight(model, checkpoint, logger):
                 )
                 state_dict[k] = model_state_dict[k]
             else:
-                logger.log("Successfully loaded {}!".format(k))
+                total_loaded+=1
             
         else:
             logger.log("Drop parameter {}.".format(k))
@@ -59,6 +60,7 @@ def load_model_weight(model, checkpoint, logger):
             logger.log("No param {}.".format(k))
             state_dict[k] = model_state_dict[k]
     model.load_state_dict(state_dict, strict=False)
+    logger.log(f"Successfully loaded {total_loaded} parameters")
 
 
 @rank_filter

@@ -59,7 +59,7 @@ if cfg.model.arch.head.num_classes != len(cfg.class_names):
 
 # Prepare data
 print("Setting up data...")
-train_dataset = build_dataset(cfg.data.train, "train", class_names=cfg.class_names)
+train_dataset = build_dataset(cfg.data.train, "val", class_names=cfg.class_names)
 
 print(f"Length of datast is {len(train_dataset)}")
 
@@ -156,4 +156,4 @@ for i,batch in enumerate(train_dataloader):
                 raw_img=unnormalize(batch["img"], *cfg["data"]["train"]["pipeline"]["normalize"])
                 #raw_img=unnormalize_simple(batch["img"])
                 vis_img=vis_results(raw_img.copy(),masks,bboxes,scores)
-                save_image(vis_img[...,::-1], f"vis_results/lettuce/vis{i}.png")
+                save_image(vis_img[...,::-1], f"vis_results/ballon/vis{i}.png")

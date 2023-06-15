@@ -28,6 +28,7 @@ model:
       activation: LeakyReLU
     mask:
       mask_size: 64
+      mask_freeze: False
     head:
       name: NanoSegHead
       num_classes: 1

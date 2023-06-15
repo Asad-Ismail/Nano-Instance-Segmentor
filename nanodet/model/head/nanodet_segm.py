@@ -89,7 +89,7 @@ class NanoDetSegmHead(GFLHead):
         )
         # Segmentation Head
         #self.segm = nn.Conv2d(self.feat_channels, self.cls_out_channels, 1, padding=0)
-        # Segmentation is claass agnostic
+        # Segmentation is class agnostic
         self.segm = nn.Conv2d(self.feat_channels, 1, 1, padding=0)
          # Segmentation loss
         self.calculate_mask_loss = MaskLoss()

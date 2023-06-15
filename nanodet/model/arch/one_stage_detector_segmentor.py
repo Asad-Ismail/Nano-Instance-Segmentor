@@ -24,6 +24,19 @@ class OneStageDetectorSegmentor(nn.Module):
         if msk_cfg is not None:
             self.mask = msk_cfg
         self.epoch = 0
+        self.log_trainable_status()
+
+    def log_trainable_status(self):
+        modules = {'backbone': self.backbone, 'fpn': self.fpn, 'head': self.head}
+        for module_name, module in modules.items():
+            if module is not None:
+                trainable_status = any(param.requires_grad for param in module.parameters())
+                if not trainable_status:
+                    print(f'Module: {module_name} is NOT trainable. Here are its layers:')
+                    for name, param in module.named_parameters():
+                        print(f'Layer: {name}, Trainable: {param.requires_grad}')
+                else:
+                    print(f'Module: {module_name} is trainable.')
 
     def forward(self, x):
         x = self.backbone(x)

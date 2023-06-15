@@ -10,10 +10,19 @@ class BoundaryLoss(torch.nn.Module):
         self.alpha = alpha
 
     def forward(self, pred, target):
-        boundary_pred = F.conv2d(pred, torch.ones(1, 1, 3, 3).to(pred.device), padding=1) < 9
-        boundary_target = F.conv2d(target, torch.ones(1, 1, 3, 3).to(target.device), padding=1) < 9
-        boundary_loss = F.binary_cross_entropy_with_logits(boundary_pred.float(), boundary_target.float(), reduction='mean')
+        # Apply convolution
+        conv_pred = F.conv2d(pred, torch.ones(1, 1, 3, 3).to(pred.device), padding=1)
+        conv_target = F.conv2d(target, torch.ones(1, 1, 3, 3).to(target.device), padding=1)
+        
+        # Apply sigmoid function to get a smooth approximation of the boundary
+        boundary_pred = torch.sigmoid(9 - conv_pred)
+        boundary_target = (conv_target < 9).float()
+        
+        # Compute loss
+        boundary_loss = F.binary_cross_entropy(boundary_pred, boundary_target, reduction='mean')
+        
         return self.alpha * boundary_loss
+
 
 class MaskLoss(nn.Module):
     def __init__(self, mode='bce', eps=1e-7):
