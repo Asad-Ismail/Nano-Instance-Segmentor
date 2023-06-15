@@ -163,7 +163,7 @@ class CocoSegmentationEvaluator:
 
     def interpolate_masks(self,box,mask,height,width,mask_threshold=0.3):
         #Interpolate and paste masks at right place
-        img = np.zeros((height,width), dtype=np.bool)
+        img = np.zeros((height,width), dtype=bool)
         x_min, y_min, x_max, y_max = box
         x_min, y_min, x_max, y_max = map(int, [x_min, y_min, x_max, y_max])
 
@@ -177,7 +177,7 @@ class CocoSegmentationEvaluator:
             mask[mask < mask_threshold] = 0
             binary_mask = mask > 0
             binary_mask_np=binary_mask.squeeze(0).squeeze(0).cpu().numpy()
-            binary_mask_np = binary_mask_np.astype(np.bool)
+            binary_mask_np = binary_mask_np.astype(bool)
             ## set binary mask in original image
             img[y_min:y_max, x_min:x_max][binary_mask_np] = True
             return img

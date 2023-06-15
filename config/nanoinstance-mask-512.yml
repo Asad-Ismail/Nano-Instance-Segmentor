@@ -5,7 +5,7 @@
 #           AP_small = 0.083
 #               AP_m = 0.278
 #               AP_l = 0.451
-save_dir: workspace/nanodet-segmentor-pretrain_ballon_2x
+save_dir: workspace/nanodet-segmentor-pretrain_cucumber
 model:
   weight_averager:
     name: ExpMovingAverager
@@ -67,13 +67,14 @@ data:
     #name: segmentationCoCo
     name: hub
     # Hub source is required if dtype is hub
-    #hub_src: "hub://aismail2/cucumber_OD"
-    hub_src: hub://aismail2/Ballon_train
+    hub_src: "hub://aismail2/cucumber_OD"
+    #hub_src: hub://aismail2/Ballon_train
     #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
     #hub_src: hub://activeloop/coco-train
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
+    #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
     #ann_path: coco/annotations/instances_train2017.json
     #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_train
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/cucumbers
     ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/annotations/instances_train2017.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
@@ -92,10 +93,12 @@ data:
   val:
     #name: segmentationCoCo
     name: hub
-    hub_src: hub://aismail2/Ballon_val
+    #hub_src: hub://aismail2/Ballon_val
+    hub_src: "hub://aismail2/cucumber_OD"
     #hub_src: hub://activeloop/coco-train
     #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_val
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_val
+    #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_val
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/cucumbers
     ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/annotations/instances_val2017.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
