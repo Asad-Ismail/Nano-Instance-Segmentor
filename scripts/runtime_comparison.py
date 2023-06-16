@@ -49,7 +49,7 @@ def print_inference_stats(model_name: str, device: str, elapsed_time: float, num
 
 def main():
     # Set paths
-    image_path = "data/cucumbers/113.png"
+    image_path = "../data/cucumbers/113.png"
     onnx_path = "segmentor.onnx"
     ir_path = Path("irmodel/segmentor.xml")
     

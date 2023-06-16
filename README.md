@@ -14,6 +14,31 @@ Nano-Instance-Segmentor is an extension of [NanoDet](https://github.com/RangiLyu
     - OpenVINO IR model in OpenVINO Runtime/CPU: 0.021 seconds per image, FPS: 47.92 (Model size: 6MB)
 
 
+## Qualitative Results
+
+Visual results for nano instance segmentor for veg and balloon dataset
+
+#### Cucumber Results
+<table>
+  <tr>
+    <td align="center"><img src="vis_results/cucumber/vis27.png" width=200px></td>
+    <td align="center"><img src="vis_results/cucumber/vis30.png" width=200px></td>
+  </tr>
+</table>
+
+#### Balloon Results
+<table>
+  <tr>
+    <td align="center"><img src="vis_results/ballon/vis5.png" width=200px></td>
+    <td align="center"><img src="vis_results/ballon/vis13.png" width=200px></td>
+  </tr>
+</table>
+
+
+
+
+
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
