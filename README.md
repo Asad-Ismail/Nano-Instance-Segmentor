@@ -9,9 +9,18 @@ Nano-Instance-Segmentor is an extension of [NanoDet](https://github.com/RangiLyu
 - 🌐 Exported models for ONNX and OpenVINO formats.
 - 🛠️ ONNX and OpenVINO formats support NMS layers.
 - ⏱️ High performance in terms of inference speed:
-    - ONNX model in ONNX Runtime/CPU: 0.033 seconds per image, FPS: 30.45 (Model size: 5MB)
-    - ONNX model in OpenVINO Runtime/CPU: 0.023 seconds per image, FPS: 43.65 (Model size: 5MB)
-    - OpenVINO IR model in OpenVINO Runtime/CPU: 0.021 seconds per image, FPS: 47.92 (Model size: 6MB)
+
+<div align="center">
+
+| Model | Runtime | Inference(s) | FPS | Model Size |
+| --- | --- | --- | --- | --- |
+| ONNX model | ONNX Runtime/CPU | 0.033 seconds | 30.45 | 5MB |
+| ONNX model | OpenVINO Runtime/CPU | 0.023 seconds | 43.65 | 5MB |
+| OpenVINO IR model | OpenVINO Runtime/CPU | 0.021 seconds | 47.92 | 6MB |
+
+</div>
+
+
 
 
 ## Qualitative Results
