@@ -8,7 +8,9 @@ Nano-Instance-Segmentor is an extension of [NanoDet](https://github.com/RangiLyu
 - ✅ Evaluation tools for instance segmentation have been included.
 - 🔄 Exported models for ONNX and OpenVINO formats.
 - 🔧 ONNX and OpenVINO formats support NMS layers.
-- ⚡ High performance in terms of inference spee
+- ⚡ High performance in terms of inference speed
+
+Results on CPU: Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz
 
 <div align="center">
 
