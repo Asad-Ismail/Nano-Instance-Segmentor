@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import onnxruntime
 import warnings
+from utils import load_np_image,vis_results,save_image
 
 def load_model(model_path):
     print(f"Loading ONNX model from {model_path}")
@@ -17,8 +18,8 @@ def run_inference(ort_session, img):
     return ort_outs
 
 # Load image
-image_path = "data/cucumbers/113.png"
-img = load_image(image_path)
+image_path = "../data/cucumbers/124.png"
+img = load_np_image(image_path)
 
 # Load model and run inference
 model_path = "segmentor.onnx"

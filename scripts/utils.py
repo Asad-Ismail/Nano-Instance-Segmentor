@@ -58,7 +58,7 @@ def vis_results(img, masks, bboxs, scores, mask_threshold=0.1, box_threshold=0.5
     return img
 
 def save_image(img, path):
-    cv2.imwrite(path, img[...,::-1])
+    cv2.imwrite(path, img)
 
 
 def unnormalize(img, mean, std):

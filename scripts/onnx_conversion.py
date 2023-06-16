@@ -19,7 +19,7 @@ cfg_path = "../config/nanoinstance-mask-512.yml"
 model_path = "../workspace/nanodet-segmentor-pretrain_cucumber/model_last.ckpt"
 out_path = "segmentor.onnx"
 input_shape = (512, 512)
-image_path = "/home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/cucumbers/113.png"
+image_path = "../data/cucumbers/120.png"
 
 assert os.path.exists(image_path), "Image does not exists!"
 
