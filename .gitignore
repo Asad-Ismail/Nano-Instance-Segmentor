@@ -139,4 +139,4 @@ data/*
 data/
 
 workspace/*
-vis_results/*
+vis_results/
