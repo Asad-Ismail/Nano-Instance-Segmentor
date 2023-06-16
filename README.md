@@ -14,9 +14,9 @@ Nano-Instance-Segmentor is an extension of [NanoDet](https://github.com/RangiLyu
 
 | Model | Runtime | Inference(s) | FPS | Model Size |
 | --- | --- | --- | --- | --- |
-| ONNX model | ONNX Runtime/CPU | 0.033 seconds | 30.45 | 5MB |
-| ONNX model | OpenVINO Runtime/CPU | 0.023 seconds | 43.65 | 5MB |
-| OpenVINO IR model | OpenVINO Runtime/CPU | 0.021 seconds | 47.92 | 6MB |
+| ONNX model | ONNX Runtime/CPU | 0.033 s | 30.45 | 5MB |
+| ONNX model | OpenVINO Runtime/CPU | 0.023 s | 43.65 | 5MB |
+| OpenVINO IR model | OpenVINO Runtime/CPU | 0.021 s| 47.92 | 6MB |
 
 </div>
 
