@@ -13,9 +13,9 @@ tensorboard
 termcolor
 #torch>=1.10,<2.0
 torchmetrics
-#torchvision
+torchvision
 tqdm
 deeplake
-openvino-dev
+openvino-dev==2023.0.0
 onnxruntime
 scikit-image

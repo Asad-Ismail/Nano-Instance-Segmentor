@@ -7,11 +7,11 @@ from utils import load_np_image, generate_random_color, vis_results, save_image
 
 
 def convert_model_to_ir(onnx_path, model_path, image_height, image_width):
+    #--compress_to_fp16
     mo_command = f"""
         mo
         --input_model "{onnx_path}"
         --input_shape "[1,3, {image_height}, {image_width}]"
-        --compress_to_fp16
         --output_dir "{model_path}"
     """
     mo_command = " ".join(mo_command.split())
@@ -54,7 +54,7 @@ def main():
     ir_path = Path("irmodel/segmentor.xml")
     compiled_model_ir, ie = load_model_into_openvino(ir_path)
 
-    image_path = "data/cucumbers/113.png"
+    image_path = "../data/cucumbers/113.png"
     img = load_np_image(image_path)
 
     results = run_inference_on_image(compiled_model_ir, img)

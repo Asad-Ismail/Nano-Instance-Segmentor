@@ -18,7 +18,7 @@ def run_inference(ort_session, img):
     return ort_outs
 
 # Load image
-image_path = "../data/cucumbers/124.png"
+image_path = "../data/cucumbers/113.png"
 img = load_np_image(image_path)
 
 # Load model and run inference

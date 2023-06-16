@@ -19,7 +19,7 @@ cfg_path = "../config/nanoinstance-mask-512.yml"
 model_path = "../workspace/nanodet-segmentor-pretrain_cucumber/model_last.ckpt"
 out_path = "segmentor.onnx"
 input_shape = (512, 512)
-image_path = "../data/cucumbers/120.png"
+image_path = "../data/cucumbers/113.png"
 
 assert os.path.exists(image_path), "Image does not exists!"
 
@@ -54,7 +54,7 @@ def main():
                       out_path,
                       keep_initializers_as_inputs=True,
                       do_constant_folding=True,
-                      opset_version=11,
+                      opset_version=17,
                       input_names=['images'],
                       output_names=["boxes", "masks", "labels", "scores"],
                       dynamic_axes={'images': {0: 'batch'}, 'scores': {0: 'batch'}, 
