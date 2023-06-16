@@ -18,19 +18,25 @@ Nano-Instance-Segmentor is an extension of [NanoDet](https://github.com/RangiLyu
 
 Visual results for nano instance segmentor for veg and balloon dataset
 
-#### Cucumber Results
-<table>
+<p align="center">
+   Cucumber Results
+</p>
+
+<table align="center">
   <tr>
-    <td align="center"><img src="vis_results/cucumber/vis27.png" width=200px></td>
-    <td align="center"><img src="vis_results/cucumber/vis30.png" width=200px></td>
+    <td><img src="vis_results/cucumber/vis27.png" width=200px></td>
+    <td><img src="vis_results/cucumber/vis30.png" width=200px></td>
   </tr>
 </table>
 
-#### Balloon Results
-<table>
+<p align="center">
+   Balloon Results
+</p>
+
+<table align="center">
   <tr>
-    <td align="center"><img src="vis_results/ballon/vis5.png" width=200px></td>
-    <td align="center"><img src="vis_results/ballon/vis13.png" width=200px></td>
+    <td><img src="vis_results/ballon/vis5.png" width=200px></td>
+    <td><img src="vis_results/ballon/vis13.png" width=200px></td>
   </tr>
 </table>
 
