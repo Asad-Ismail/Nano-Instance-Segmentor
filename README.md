@@ -24,8 +24,8 @@ Visual results for nano instance segmentor for veg and balloon dataset
 
 <table align="center">
   <tr>
-    <td><img src="vis_results/cucumber/vis27.png" width=200px></td>
-    <td><img src="vis_results/cucumber/vis30.png" width=200px></td>
+    <td><img src="vis_results/cucumber/vis27.png" width=300px></td>
+    <td><img src="vis_results/cucumber/vis30.png" width=300px></td>
   </tr>
 </table>
 
@@ -35,8 +35,8 @@ Visual results for nano instance segmentor for veg and balloon dataset
 
 <table align="center">
   <tr>
-    <td><img src="vis_results/ballon/vis5.png" width=200px></td>
-    <td><img src="vis_results/ballon/vis13.png" width=200px></td>
+    <td><img src="vis_results/ballon/vis5.png" width=300px></td>
+    <td><img src="vis_results/ballon/vis13.png" width=300px></td>
   </tr>
 </table>
 
