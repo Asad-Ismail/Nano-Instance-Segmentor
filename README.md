@@ -4,11 +4,11 @@ Nano-Instance-Segmentor is an extension of [NanoDet](https://github.com/RangiLyu
 
 ## Highlights of Nano-Instance-Segmentor:
 
-- 🚀 A lightweight segmentation branch added to the original detector, enabling instance segmentation.
-- ✔️ Evaluation tools for instance segmentation have been included.
-- 🌐 Exported models for ONNX and OpenVINO formats.
-- 🛠️ ONNX and OpenVINO formats support NMS layers.
-- ⏱️ High performance in terms of inference speed:
+- 🪶 A lightweight segmentation branch added to the original detector, enabling instance segmentation.
+- ✅ Evaluation tools for instance segmentation have been included.
+- 🔄 Exported models for ONNX and OpenVINO formats.
+- 🔧 ONNX and OpenVINO formats support NMS layers.
+- ⚡ High performance in terms of inference spee
 
 <div align="center">
 
