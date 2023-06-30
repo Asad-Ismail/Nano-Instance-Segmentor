@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-06-30T11:58:01.140Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" version="20.8.5" etag="zi_ABJ8qjWoczqzZ9E2r" type="github">
+<mxfile host="app.diagrams.net" modified="2023-06-30T12:03:03.623Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" version="20.8.5" etag="HFDC3rP9c1MgQ_RJTW0m" type="github">
   <diagram id="JaHQ51rUl5n7oyP_Nvp8" name="Page-1">
     <mxGraphModel dx="995" dy="734" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -195,6 +195,18 @@
         </mxCell>
         <mxCell id="nJUPerPMOQc4MbRavXT1-95" value="&lt;b&gt;mask&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="556" y="408.5" width="40" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="nJUPerPMOQc4MbRavXT1-96" value="1/8" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="190" y="325" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="nJUPerPMOQc4MbRavXT1-97" value="1/16" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="190" y="353" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="nJUPerPMOQc4MbRavXT1-98" value="1/32" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="190" y="385" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="nJUPerPMOQc4MbRavXT1-99" value="From left to right: Input image is passed to backbone features are fed through light weight FPN, output of FPN are passed through head which first calculates the boxes and class label, then boxes are passed through class agnostic mask detection" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="445" width="700" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
