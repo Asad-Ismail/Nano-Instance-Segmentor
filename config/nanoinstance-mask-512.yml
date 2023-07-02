@@ -71,23 +71,14 @@ data:
     # Hub source is required if dtype is hub
     hub_src: "hub://aismail2/cucumber_OD"
     #hub_src: hub://aismail2/Ballon_train
-    #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
-    #hub_src: hub://activeloop/coco-train
-    #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/b_train
-    #ann_path: coco/annotations/instances_train2017.json
-    #img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_train
     img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/cucumbers
     ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/coco_raw/annotations/instances_train2017.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
     pipeline:
       perspective: 0.0
-     #scale: [0.6, 1.4]
-     #stretch: [[0.8, 1.2], [0.8, 1.2]]
       rotation: 0
       shear: 0
-     # translate: 0.2
-     # flip: 0.5
       brightness: 0.2
       contrast: [0.6, 1.4]
       saturation: [0.5, 1.2]

@@ -66,8 +66,6 @@ class HubDataset(CocoDataset):
         ann_id = 1
         
         for i,d in tqdm(enumerate(self.ds)):
-            #if (i>20):
-            #    break
             image=d.images.numpy()
             image=cv2.resize(image,(self.img_sz,self.img_sz))
             if self.save_imgs:
@@ -75,9 +73,7 @@ class HubDataset(CocoDataset):
                     image=image[...,::-1]
                 cv2.imwrite(os.path.join(self.img_path,f"{i}.png"),image)
             masks=d.masks.numpy().astype(np.uint8)*255
-            #labels=d.categories.numpy().astype(np.long)
-            #labels=d.labels.numpy().astype(np.long)
-
+            
             file_name = f"{i}.png"
 
             if len(image.shape) == 3:
@@ -95,7 +91,6 @@ class HubDataset(CocoDataset):
             for j in range(masks.shape[-1]):
                 mask=masks[...,j]
                 mask=cv2.resize(mask,(self.img_sz,self.img_sz),cv2.INTER_NEAREST)//255
-                #print(f"Mask min and max is {mask.min()},{mask.max()}")
                 nzeros=np.nonzero(mask)
                 ys=nzeros[0]
                 xs=nzeros[1]
