@@ -41,6 +41,17 @@ Visual results for nano instance segmentor for veg and balloon dataset
 </table>
 
 <p align="center">
+   Pepper Results
+</p>
+
+<table align="center">
+  <tr>
+    <td><img src="vis_results/pepper/vis2.png" width=300px></td>
+    <td><img src="vis_results/pepper/vis10.png" width=300px></td>
+  </tr>
+</table>
+
+<p align="center">
    Balloon Results
 </p>
 
