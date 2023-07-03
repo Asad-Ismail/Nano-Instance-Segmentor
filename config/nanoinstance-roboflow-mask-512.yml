@@ -5,7 +5,7 @@
 #           AP_small = 0.083
 #               AP_m = 0.278
 #               AP_l = 0.451
-save_dir: workspace/nanodet-segmentor-person
+save_dir: workspace/nanodet-segmentor-peppers
 model:
   weight_averager:
     name: ExpMovingAverager
@@ -66,8 +66,8 @@ model:
 data:
   train:
     name: segmentationRoboflow
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/PennFundaCoco/train
-    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/PennFundaCoco/annotations/instances_train.json
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Pappers-2-1/train/
+    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Pappers-2-1/train/_annotations.coco.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
     pipeline:
@@ -85,8 +85,8 @@ data:
       normalize: [[0.485, 0.456, 0.406], [0.229, 0.224, 0.225]]
   val:
     name: segmentationRoboflow
-    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/PennFundaCoco/val
-    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/data/PennFundaCoco/annotations/instances_val.json
+    img_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Pappers-2-1/valid/
+    ann_path: /home/ec2-user/SageMaker/Nano-Instance-Segmentor/notebooks/Pappers-2-1/valid/_annotations.coco.json
     input_size: [512,512] #[w,h]
     keep_ratio: False
     pipeline:
@@ -121,4 +121,4 @@ evaluator:
 log:
   interval: 2
 
-class_names: ['Person']
+class_names: ['Peppers']
