@@ -127,4 +127,4 @@ evaluator:
 log:
   interval: 2
 
-class_names: ['cucumber']
+class_names: ['pepper']

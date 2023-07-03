@@ -30,7 +30,7 @@ from nanodet.model.weight_averager import build_weight_averager
 import numpy as np
 import cv2
 from utils import vis_results,generate_random_color,unnormalize,unnormalize_simple,save_image
-
+import deeplake as hub
 
 # Configurations
 torch.backends.cudnn.enabled = True
@@ -44,6 +44,61 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=None, help="random seed")
     args = parser.parse_args()
     return args
+
+def log_to_activeloop(img,gt_masks,gt_boxes,gt_labels,pred_masks,pred_boxes,pred_labels):
+
+    ds = hub.empty('hub://aismail2/pepper_evaluate',overwrite=True)
+
+    class_map={"pepper":0}
+    class_names=["pepper"]
+
+    with ds:
+
+        ds.create_tensor('images', htype='image',sample_compression = 'jpeg')
+        ds.create_tensor('boxes', htype='bbox')
+        ds.boxes.info.update(coords = {'type': 'pixel', 'mode': 'LTRB'})
+        ds.create_tensor('labels', htype='class_label', class_names = class_names)
+        ds.create_tensor('masks', htype = 'binary_mask', sample_compression = 'lz4')
+
+        ds.create_group('model_evaluation')
+        ds.model_evaluation.create_tensor('labels', htype = 'class_label', class_names = ds.labels.info.class_names,exist_ok=True)
+        ds.model_evaluation.create_tensor('boxes', htype = 'bbox', coords = {'type': 'pixel', 'mode': 'LTRB'},exist_ok=True)
+        ds.model_evaluation.create_tensor('masks', htype = 'binary_mask', sample_compression = 'lz4',exist_ok=True)
+        
+        h,w,_=img.shape
+        all_masks=[]
+        all_boxes=[]
+
+        for i,msk in enumerate(pred_masks):
+            bx=pred_boxes[i]
+            z_img=np.zeros((h,w),dtype=bool)
+            z_img[bx[1]:bx[3],bx[0]:bx[2]]=msk==True
+            all_masks.append(z_img)
+            all_boxes.append(bx)
+        
+        f_bxs=np.array(all_boxes)
+        f_msks=np.array(all_masks)
+        f_msks=np.moveaxis(f_msks, 0, -1)
+        pred_labels=np.array(pred_labels)
+
+
+        gt_masks=np.moveaxis(gt_masks.detach().numpy(), 0, -1)
+        ## Append ground truth     
+        ds.images.append(img)
+        ds.labels.append(gt_labels.astype(np.uint32))
+        ds.boxes.append(gt_boxes.astype(np.float32))
+        ds.masks.append(gt_masks.astype(bool))
+            
+        # Append predictions
+        ds.model_evaluation.masks.append(f_msks.astype(bool))
+        ds.model_evaluation.boxes.append(f_bxs.astype(np.float32))
+        ds.model_evaluation.labels.append(pred_labels.astype(np.uint32))
+    
+    
+    ds.commit('Added model predictions.')
+    print(f"All done!!")
+    #cv2.imwrite("ds_img.png",ds_img)
+    #cv2.imwrite("im.png",img)
 
 args = parse_args()
 
@@ -59,12 +114,12 @@ if cfg.model.arch.head.num_classes != len(cfg.class_names):
 
 # Prepare data
 print("Setting up data...")
-train_dataset = build_dataset(cfg.data.train, "val", class_names=cfg.class_names)
+val_dataset = build_dataset(cfg.data.val, "val", class_names=cfg.class_names)
 
-print(f"Length of datast is {len(train_dataset)}")
+print(f"Length of datast is {len(val_dataset)}")
 
-train_dataloader = DataLoader(
-    train_dataset,
+val_dataloader = DataLoader(
+    val_dataset,
     batch_size=1,
     shuffle=False,
     num_workers=cfg.device.workers_per_gpu,
@@ -136,15 +191,19 @@ class TrainingTask(LightningModule):
 task = TrainingTask(cfg)
 
 # Load model
-model_resume_path = os.path.join(cfg.save_dir, "model_last.ckpt")
+#model_resume_path = os.path.join(cfg.save_dir, "model_last.ckpt")
+model_resume_path = os.path.join(cfg.save_dir,"model_best","model_best.ckpt")
 print(f"Loading model weights {model_resume_path}!!!")
 task.load_state_dict(torch.load(model_resume_path)["state_dict"]) 
 task.eval()
 
+evaluator = build_evaluator(cfg.evaluator,val_dataset)
 
-evaluator = build_evaluator(cfg.evaluator,train_dataset)
 
-for i,batch in enumerate(train_dataloader):
+for i,batch in enumerate(val_dataloader):
+    all_masks=[]
+    all_lbl=[]
+    all_boxes=[]
     with torch.no_grad():
         predictions = task.predict(batch)
         eval_results = evaluator.evaluate(predictions, cfg.save_dir)
@@ -155,5 +214,12 @@ for i,batch in enumerate(train_dataloader):
                 scores=[item["score"] for item in preds]
                 raw_img=unnormalize(batch["img"], *cfg["data"]["train"]["pipeline"]["normalize"])
                 #raw_img=unnormalize_simple(batch["img"])
-                vis_img=vis_results(raw_img.copy(),masks,bboxes,scores)
-                save_image(vis_img[...,::-1], f"vis_results/pepper/vis{i}.png")
+                vis_img,fil_msks,fil_boxes,fil_labels=vis_results(raw_img.copy(),masks,bboxes,scores)
+                
+                all_masks.extend(fil_msks)
+                all_boxes.extend(fil_boxes)
+                all_lbl.append(fil_labels)
+                save_image(vis_img, f"vis_results/pepper/vis{i}.png")
+    log_to_activeloop(raw_img,batch["gt_masks"][0],batch["gt_bboxes"][0],batch["gt_labels"][0],all_masks, all_boxes, all_lbl)
+    break
+    #print(eval_results)

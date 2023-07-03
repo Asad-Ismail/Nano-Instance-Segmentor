@@ -35,12 +35,16 @@ def generate_random_color():
 def vis_results(img, masks, bboxs, scores, mask_threshold=0.1, box_threshold=0.5):
     img_height, img_width, _ = img.shape
 
+    fil_masks=[]
+    fil_boxes=[]
+    fil_labels=[]
+
     for mask, bbox, score in zip(masks, bboxs,scores):
         x_min, y_min, x_max, y_max = map(int, bbox)
 
         if score < box_threshold:
             print("Filtering using box threshold")
-            return img
+            continue
 
         x_min, x_max = max(0, x_min), min(x_max+1, img_width)
         y_min, y_max = max(0, y_min), min(y_max+1, img_height)
@@ -51,11 +55,15 @@ def vis_results(img, masks, bboxs, scores, mask_threshold=0.1, box_threshold=0.5
         mask[mask < mask_threshold] = 0
         binary_mask = mask > 0
 
+        fil_masks.append(binary_mask)
+        fil_boxes.append([x_min,y_min,x_max,y_max])
+        fil_labels.append(0)
+
         color = generate_random_color()
         img[y_min:y_max, x_min:x_max][binary_mask.squeeze()] = color
         cv2.rectangle(img, (x_min, y_min), (x_max, y_max), color, 2)
 
-    return img
+    return img,fil_masks,fil_boxes,fil_labels
 
 def save_image(img, path):
     cv2.imwrite(path, img)
